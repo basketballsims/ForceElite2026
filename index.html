@@ -112,6 +112,30 @@
   .hamburger-icon i:nth-child(1){top:0;}
   .hamburger-icon i:nth-child(2){top:6px;}
   .hamburger-icon i:nth-child(3){top:12px;}
+
+  /* Desktop nav bar — hidden on mobile, shown at wider viewports (see media query below) */
+  .nav-desktop{
+    display:none;
+    align-items:center;
+    gap:2px;
+    flex-wrap:wrap;
+  }
+  .nav-desktop button.tab-btn{
+    background:transparent;
+    border:none;
+    color:rgba(255,255,255,0.78);
+    font-weight:700;
+    font-size:13.5px;
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-family:inherit;
+    white-space:nowrap;
+    transition:background 0.15s ease,color 0.15s ease;
+  }
+  .nav-desktop button.tab-btn:hover{background:rgba(255,255,255,0.1);color:var(--white);}
+  .nav-desktop button.tab-btn.active{background:var(--gold);color:var(--navy-dark);}
+
   .wordmark{
     font-size:26px;
     font-weight:800;
@@ -507,28 +531,29 @@
     border-top:1px solid var(--border);
   }
   .roster-card.open .roster-detail{display:block;}
-  .roster-photos{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:12px;
-  }
-  .roster-photo-slot{
+  .roster-photo{
+    width:132px;
     aspect-ratio:3/4;
-    background:var(--off-white);
-    border:1.5px dashed var(--border);
-    border-radius:10px;
+    margin:12px auto 0;
+    background:linear-gradient(160deg,var(--navy-light) 0%,var(--navy-dark) 100%);
+    border-radius:12px;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:6px;
-    color:var(--muted);
-    text-align:center;
-    padding:8px;
+    gap:7px;
+    padding:10px;
+    box-shadow:0 2px 8px rgba(15,35,80,0.18);
   }
-  .roster-photo-slot .icon{font-size:22px;}
-  .roster-photo-slot span{font-size:10.5px;font-weight:600;line-height:1.3;}
+  .roster-photo svg{width:46%;height:46%;color:var(--gold);flex-shrink:0;}
+  .roster-photo span{
+    font-size:9.5px;
+    font-weight:700;
+    color:rgba(255,255,255,0.7);
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    text-align:center;
+  }
   .roster-strengths{
     margin-top:12px;
     background:var(--off-white);
@@ -724,6 +749,25 @@
     font-size:11.5px;
   }
   footer .fw{color:var(--gold-dark);font-weight:700;}
+
+  /* ===== Responsive: desktop nav + centered content column ===== */
+  @media (min-width:900px){
+    .hamburger-btn{display:none;}
+    .nav-desktop{display:flex;}
+    .nav-overlay, .nav-drawer{display:none!important;}
+
+    .header-inner, .next-up, .top-quote-inner, main, footer{
+      max-width:960px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+    main{padding:24px 16px 8px;}
+  }
+  @media (min-width:1200px){
+    .header-inner, .next-up, .top-quote-inner, main, footer{
+      max-width:1080px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -739,6 +783,14 @@
         <div class="subtitle">U16 Boys &middot; 2026-27 Season</div>
       </div>
     </div>
+    <nav class="nav-desktop" aria-label="Main navigation">
+      <button class="tab-btn active" data-view="schedule">Schedule</button>
+      <button class="tab-btn" data-view="roster">Roster</button>
+      <button class="tab-btn" data-view="workouts">Workouts</button>
+      <button class="tab-btn" data-view="care">Care</button>
+      <button class="tab-btn" data-view="goal">My Goal</button>
+      <button class="tab-btn" data-view="team">Team Info</button>
+    </nav>
     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
       <span class="hamburger-icon"><i></i><i></i><i></i></span>
     </button>
@@ -751,8 +803,10 @@
 </header>
 
 <div class="top-quote">
-  <div class="top-quote-label">Quote of the Day</div>
-  <div class="top-quote-text" id="topQuoteText">Loading&hellip;</div>
+  <div class="top-quote-inner">
+    <div class="top-quote-label">Quote of the Day</div>
+    <div class="top-quote-text" id="topQuoteText">Loading&hellip;</div>
+  </div>
 </div>
 
 <div class="nav-overlay" id="navOverlay"></div>
@@ -860,7 +914,7 @@
   <section class="view" id="view-roster">
 
     <div class="section-title">2026&ndash;27 Roster</div>
-    <div class="note" style="margin:2px 2px 12px;">Tap a player to see photos and coach's notes.</div>
+    <div class="note" style="margin:2px 2px 12px;">Tap a player to see their photo and coach's notes.</div>
       <div class="roster-card" id="roster-p1">
         <button class="roster-row" data-roster-toggle="p1">
           <span class="roster-num">1</span>
@@ -869,15 +923,9 @@
           <span class="roster-chevron">&#9660;</span>
         </button>
         <div class="roster-detail">
-          <div class="roster-photos">
-            <div class="roster-photo-slot">
-              <span class="icon">&#128247;</span>
-              <span>Player photo coming soon</span>
-            </div>
-            <div class="roster-photo-slot">
-              <span class="icon">&#10024;</span>
-              <span>AI uniform photo coming soon</span>
-            </div>
+          <div class="roster-photo">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12.75c2.9 0 5.25-2.35 5.25-5.25S14.9 2.25 12 2.25 6.75 4.6 6.75 7.5s2.35 5.25 5.25 5.25zm0 2.5c-3.5 0-10.5 1.75-10.5 5.25v2.5h21v-2.5c0-3.5-7-5.25-10.5-5.25z"/></svg>
+            <span>Photo coming soon</span>
           </div>
           <div class="roster-strengths">
             <div class="roster-strengths-label">Strengths</div>
@@ -893,15 +941,9 @@
           <span class="roster-chevron">&#9660;</span>
         </button>
         <div class="roster-detail">
-          <div class="roster-photos">
-            <div class="roster-photo-slot">
-              <span class="icon">&#128247;</span>
-              <span>Player photo coming soon</span>
-            </div>
-            <div class="roster-photo-slot">
-              <span class="icon">&#10024;</span>
-              <span>AI uniform photo coming soon</span>
-            </div>
+          <div class="roster-photo">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12.75c2.9 0 5.25-2.35 5.25-5.25S14.9 2.25 12 2.25 6.75 4.6 6.75 7.5s2.35 5.25 5.25 5.25zm0 2.5c-3.5 0-10.5 1.75-10.5 5.25v2.5h21v-2.5c0-3.5-7-5.25-10.5-5.25z"/></svg>
+            <span>Photo coming soon</span>
           </div>
           <div class="roster-strengths">
             <div class="roster-strengths-label">Strengths</div>
@@ -917,15 +959,9 @@
           <span class="roster-chevron">&#9660;</span>
         </button>
         <div class="roster-detail">
-          <div class="roster-photos">
-            <div class="roster-photo-slot">
-              <span class="icon">&#128247;</span>
-              <span>Player photo coming soon</span>
-            </div>
-            <div class="roster-photo-slot">
-              <span class="icon">&#10024;</span>
-              <span>AI uniform photo coming soon</span>
-            </div>
+          <div class="roster-photo">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12.75c2.9 0 5.25-2.35 5.25-5.25S14.9 2.25 12 2.25 6.75 4.6 6.75 7.5s2.35 5.25 5.25 5.25zm0 2.5c-3.5 0-10.5 1.75-10.5 5.25v2.5h21v-2.5c0-3.5-7-5.25-10.5-5.25z"/></svg>
+            <span>Photo coming soon</span>
           </div>
           <div class="roster-strengths">
             <div class="roster-strengths-label">Strengths</div>
@@ -941,15 +977,9 @@
           <span class="roster-chevron">&#9660;</span>
         </button>
         <div class="roster-detail">
-          <div class="roster-photos">
-            <div class="roster-photo-slot">
-              <span class="icon">&#128247;</span>
-              <span>Player photo coming soon</span>
-            </div>
-            <div class="roster-photo-slot">
-              <span class="icon">&#10024;</span>
-              <span>AI uniform photo coming soon</span>
-            </div>
+          <div class="roster-photo">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12.75c2.9 0 5.25-2.35 5.25-5.25S14.9 2.25 12 2.25 6.75 4.6 6.75 7.5s2.35 5.25 5.25 5.25zm0 2.5c-3.5 0-10.5 1.75-10.5 5.25v2.5h21v-2.5c0-3.5-7-5.25-10.5-5.25z"/></svg>
+            <span>Photo coming soon</span>
           </div>
           <div class="roster-strengths">
             <div class="roster-strengths-label">Strengths</div>
@@ -965,15 +995,9 @@
           <span class="roster-chevron">&#9660;</span>
         </button>
         <div class="roster-detail">
-          <div class="roster-photos">
-            <div class="roster-photo-slot">
-              <span class="icon">&#128247;</span>
-              <span>Player photo coming soon</span>
-            </div>
-            <div class="roster-photo-slot">
-              <span class="icon">&#10024;</span>
-              <span>AI uniform photo coming soon</span>
-            </div>
+          <div class="roster-photo">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12.75c2.9 0 5.25-2.35 5.25-5.25S14.9 2.25 12 2.25 6.75 4.6 6.75 7.5s2.35 5.25 5.25 5.25zm0 2.5c-3.5 0-10.5 1.75-10.5 5.25v2.5h21v-2.5c0-3.5-7-5.25-10.5-5.25z"/></svg>
+            <span>Photo coming soon</span>
           </div>
           <div class="roster-strengths">
             <div class="roster-strengths-label">Strengths</div>
@@ -989,15 +1013,9 @@
           <span class="roster-chevron">&#9660;</span>
         </button>
         <div class="roster-detail">
-          <div class="roster-photos">
-            <div class="roster-photo-slot">
-              <span class="icon">&#128247;</span>
-              <span>Player photo coming soon</span>
-            </div>
-            <div class="roster-photo-slot">
-              <span class="icon">&#10024;</span>
-              <span>AI uniform photo coming soon</span>
-            </div>
+          <div class="roster-photo">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12.75c2.9 0 5.25-2.35 5.25-5.25S14.9 2.25 12 2.25 6.75 4.6 6.75 7.5s2.35 5.25 5.25 5.25zm0 2.5c-3.5 0-10.5 1.75-10.5 5.25v2.5h21v-2.5c0-3.5-7-5.25-10.5-5.25z"/></svg>
+            <span>Photo coming soon</span>
           </div>
           <div class="roster-strengths">
             <div class="roster-strengths-label">Strengths</div>
@@ -1013,15 +1031,9 @@
           <span class="roster-chevron">&#9660;</span>
         </button>
         <div class="roster-detail">
-          <div class="roster-photos">
-            <div class="roster-photo-slot">
-              <span class="icon">&#128247;</span>
-              <span>Player photo coming soon</span>
-            </div>
-            <div class="roster-photo-slot">
-              <span class="icon">&#10024;</span>
-              <span>AI uniform photo coming soon</span>
-            </div>
+          <div class="roster-photo">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12.75c2.9 0 5.25-2.35 5.25-5.25S14.9 2.25 12 2.25 6.75 4.6 6.75 7.5s2.35 5.25 5.25 5.25zm0 2.5c-3.5 0-10.5 1.75-10.5 5.25v2.5h21v-2.5c0-3.5-7-5.25-10.5-5.25z"/></svg>
+            <span>Photo coming soon</span>
           </div>
           <div class="roster-strengths">
             <div class="roster-strengths-label">Strengths</div>
@@ -1037,15 +1049,9 @@
           <span class="roster-chevron">&#9660;</span>
         </button>
         <div class="roster-detail">
-          <div class="roster-photos">
-            <div class="roster-photo-slot">
-              <span class="icon">&#128247;</span>
-              <span>Player photo coming soon</span>
-            </div>
-            <div class="roster-photo-slot">
-              <span class="icon">&#10024;</span>
-              <span>AI uniform photo coming soon</span>
-            </div>
+          <div class="roster-photo">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12.75c2.9 0 5.25-2.35 5.25-5.25S14.9 2.25 12 2.25 6.75 4.6 6.75 7.5s2.35 5.25 5.25 5.25zm0 2.5c-3.5 0-10.5 1.75-10.5 5.25v2.5h21v-2.5c0-3.5-7-5.25-10.5-5.25z"/></svg>
+            <span>Photo coming soon</span>
           </div>
           <div class="roster-strengths">
             <div class="roster-strengths-label">Strengths</div>
@@ -1061,15 +1067,9 @@
           <span class="roster-chevron">&#9660;</span>
         </button>
         <div class="roster-detail">
-          <div class="roster-photos">
-            <div class="roster-photo-slot">
-              <span class="icon">&#128247;</span>
-              <span>Player photo coming soon</span>
-            </div>
-            <div class="roster-photo-slot">
-              <span class="icon">&#10024;</span>
-              <span>AI uniform photo coming soon</span>
-            </div>
+          <div class="roster-photo">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12.75c2.9 0 5.25-2.35 5.25-5.25S14.9 2.25 12 2.25 6.75 4.6 6.75 7.5s2.35 5.25 5.25 5.25zm0 2.5c-3.5 0-10.5 1.75-10.5 5.25v2.5h21v-2.5c0-3.5-7-5.25-10.5-5.25z"/></svg>
+            <span>Photo coming soon</span>
           </div>
           <div class="roster-strengths">
             <div class="roster-strengths-label">Strengths</div>
@@ -1085,15 +1085,9 @@
           <span class="roster-chevron">&#9660;</span>
         </button>
         <div class="roster-detail">
-          <div class="roster-photos">
-            <div class="roster-photo-slot">
-              <span class="icon">&#128247;</span>
-              <span>Player photo coming soon</span>
-            </div>
-            <div class="roster-photo-slot">
-              <span class="icon">&#10024;</span>
-              <span>AI uniform photo coming soon</span>
-            </div>
+          <div class="roster-photo">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12.75c2.9 0 5.25-2.35 5.25-5.25S14.9 2.25 12 2.25 6.75 4.6 6.75 7.5s2.35 5.25 5.25 5.25zm0 2.5c-3.5 0-10.5 1.75-10.5 5.25v2.5h21v-2.5c0-3.5-7-5.25-10.5-5.25z"/></svg>
+            <span>Photo coming soon</span>
           </div>
           <div class="roster-strengths">
             <div class="roster-strengths-label">Strengths</div>
@@ -1109,15 +1103,9 @@
           <span class="roster-chevron">&#9660;</span>
         </button>
         <div class="roster-detail">
-          <div class="roster-photos">
-            <div class="roster-photo-slot">
-              <span class="icon">&#128247;</span>
-              <span>Player photo coming soon</span>
-            </div>
-            <div class="roster-photo-slot">
-              <span class="icon">&#10024;</span>
-              <span>AI uniform photo coming soon</span>
-            </div>
+          <div class="roster-photo">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12.75c2.9 0 5.25-2.35 5.25-5.25S14.9 2.25 12 2.25 6.75 4.6 6.75 7.5s2.35 5.25 5.25 5.25zm0 2.5c-3.5 0-10.5 1.75-10.5 5.25v2.5h21v-2.5c0-3.5-7-5.25-10.5-5.25z"/></svg>
+            <span>Photo coming soon</span>
           </div>
           <div class="roster-strengths">
             <div class="roster-strengths-label">Strengths</div>
