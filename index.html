@@ -26,6 +26,8 @@
     --border:#e3e0d8;
     --card-bg:#ffffff;
     --danger:#c14a3a;
+    --blue:#2f6fed;
+    --blue-dark:#1e4fb8;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
@@ -340,6 +342,77 @@
     color:var(--navy);
     letter-spacing:0.2px;
   }
+
+  /* League accordion */
+  .league-card{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:14px;
+    margin-bottom:10px;
+    box-shadow:0 1px 3px rgba(15,35,80,0.05);
+    overflow:hidden;
+  }
+  .league-header-btn{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    border:none;
+    background:transparent;
+    padding:14px 16px;
+    cursor:pointer;
+    font-family:inherit;
+    text-align:left;
+  }
+  .league-header-btn .league-header{margin-bottom:0;}
+  .league-chevron{
+    color:var(--muted);
+    font-size:12px;
+    transition:transform 0.18s ease;
+    flex-shrink:0;
+  }
+  .league-card.open .league-chevron{transform:rotate(180deg);}
+  .league-body{
+    display:none;
+    padding:0 16px 16px;
+  }
+  .league-card.open .league-body{display:block;}
+
+  /* Practice / Game / Team-event visual coding */
+  .type-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:22px;height:22px;
+    border-radius:50%;
+    margin-right:7px;
+    font-size:12px;
+    vertical-align:-5px;
+    flex-shrink:0;
+  }
+  .type-icon-event{background:rgba(15,35,80,0.1);}
+  .card.type-practice{
+    background:rgba(244,185,66,0.12);
+    border-color:rgba(217,154,31,0.35);
+  }
+  .card.type-game{
+    background:rgba(47,111,237,0.08);
+    border-color:rgba(47,111,237,0.3);
+  }
+  .card.type-event{
+    background:rgba(15,35,80,0.04);
+    border-color:rgba(15,35,80,0.18);
+  }
+  .datelist li.datelist-item.type-game{
+    background:rgba(47,111,237,0.07);
+    border-top-color:transparent;
+    border-radius:8px;
+    padding-left:8px;
+    padding-right:8px;
+    margin:4px 0;
+  }
+  .datelist li.datelist-item.type-game + .datelist-item.type-game{margin-top:4px;}
+
   .deadline-line{
     display:flex;
     justify-content:space-between;
@@ -414,6 +487,18 @@
     padding:14px 16px;
     margin-bottom:10px;
     box-shadow:0 1px 3px rgba(15,35,80,0.05);
+  }
+  .week-card.type-practice{
+    background:rgba(244,185,66,0.12);
+    border-color:rgba(217,154,31,0.35);
+  }
+  .week-card.type-game{
+    background:rgba(47,111,237,0.08);
+    border-color:rgba(47,111,237,0.3);
+  }
+  .week-card.type-event{
+    background:rgba(15,35,80,0.04);
+    border-color:rgba(15,35,80,0.18);
   }
 
   .attend-row{
@@ -1031,8 +1116,20 @@
     <div id="weekList"></div>
     <div class="note" id="weekEmptyNote" style="display:none;">Nothing on the schedule this week &mdash; check back soon.</div>
 
+    <div class="section-title">Team Event</div>
+    <div class="card type-event">
+      <div class="card-row">
+        <div>
+          <div class="card-title"><span class="type-icon type-icon-event">&#128101;</span>Mohawk College MBB</div>
+          <div class="card-sub">Mohawk College vs. Windsor Lancers &mdash; team outing</div>
+        </div>
+        <span class="badge badge-gold">Fri, Oct 2</span>
+      </div>
+      <div class="attend-slot" data-event-id="evt-mohawk"></div>
+    </div>
+
     <div class="section-title">Weekly Practices</div>
-    <div class="card">
+    <div class="card type-practice">
       <div class="card-row">
         <div>
           <div class="card-title">Monday</div>
@@ -1041,7 +1138,7 @@
         <span class="badge badge-navy">6:00 PM</span>
       </div>
     </div>
-    <div class="card">
+    <div class="card type-practice">
       <div class="card-row">
         <div>
           <div class="card-title">Wednesday</div>
@@ -1052,64 +1149,61 @@
       <div class="note">Practices run every Monday &amp; Wednesday, starting <b>Monday, September 21</b>.</div>
     </div>
 
-    <div class="section-title">Team Event</div>
-    <div class="card">
-      <div class="card-row">
-        <div>
-          <div class="card-title">Mohawk College MBB</div>
-          <div class="card-sub">Mohawk College vs. Windsor Lancers &mdash; team outing</div>
+    <div class="section-title">Leagues</div>
+    <div class="league-card open" id="league-coalition">
+      <button class="league-header-btn" type="button" data-league-toggle="league-coalition">
+        <div class="league-header">
+          <span class="league-dot"></span>
+          <span class="league-name">Coalition Basketball</span>
         </div>
-        <span class="badge badge-gold">Fri, Oct 2</span>
+        <span class="league-chevron">&#9660;</span>
+      </button>
+      <div class="league-body">
+        <div class="deadline-line">
+          <span>League payment deadline &mdash; secures your <b>12 Molten game balls</b></span>
+          <b>Oct 5</b>
+        </div>
+        <a class="link-btn" href="https://coalitionbasketball.com/" target="_blank" rel="noopener">Download the Coalition App</a>
+        <div class="block-title" style="margin-top:14px;">Game Weekends</div>
+        <ul class="datelist">
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Oct 31 &ndash; Nov 1</span></div><div class="attend-slot" data-event-id="game-coalition-1"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Dec 5 &ndash; 6</span></div><div class="attend-slot" data-event-id="game-coalition-2"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Jan 9 &ndash; 10</span></div><div class="attend-slot" data-event-id="game-coalition-3"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Jan 30 &ndash; 31</span></div><div class="attend-slot" data-event-id="game-coalition-4"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Feb 13 &ndash; 14</span></div><div class="attend-slot" data-event-id="game-coalition-5"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Mar 6 &ndash; 7</span></div><div class="attend-slot" data-event-id="game-coalition-6"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Mar 20 &ndash; 21 <span class="tag">All-Star</span></span></div><div class="attend-slot" data-event-id="game-coalition-7"></div></li>
+        </ul>
       </div>
-      <div class="attend-slot" data-event-id="evt-mohawk"></div>
     </div>
 
-    <div class="section-title">Coalition League</div>
-    <div class="card">
-      <div class="league-header">
-        <span class="league-dot"></span>
-        <span class="league-name">Coalition Basketball</span>
+    <div class="league-card" id="league-obl">
+      <button class="league-header-btn" type="button" data-league-toggle="league-obl">
+        <div class="league-header">
+          <span class="league-dot"></span>
+          <span class="league-name">OBL</span>
+        </div>
+        <span class="league-chevron">&#9660;</span>
+      </button>
+      <div class="league-body">
+        <div class="deadline-line">
+          <span>OBL registration deadline</span>
+          <b>Oct 16</b>
+        </div>
+        <div class="block-title" style="margin-top:14px;">Game Weekends</div>
+        <ul class="datelist">
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Nov 20 &ndash; 21</span></div><div class="attend-slot" data-event-id="game-obl-1"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Feb 6 &ndash; 7</span></div><div class="attend-slot" data-event-id="game-obl-2"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Feb 20 &ndash; 21</span></div><div class="attend-slot" data-event-id="game-obl-3"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Apr 10 &ndash; 11 <span class="tag">4-game weekend</span></span></div><div class="attend-slot" data-event-id="game-obl-4"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span>Apr 17 &ndash; 18</span></div><div class="attend-slot" data-event-id="game-obl-5"></div></li>
+        </ul>
+        <div class="block-title">Tournament</div>
+        <ul class="datelist">
+          <li class="datelist-item type-game"><div class="datelist-row"><span>OBA Cup</span><span class="tag">likely May 14&ndash;16</span></div><div class="attend-slot" data-event-id="game-oba-cup"></div></li>
+        </ul>
+        <div class="note">OBA Cup dates are not yet finalized &mdash; will be confirmed closer to the spring.</div>
       </div>
-      <div class="deadline-line">
-        <span>League payment deadline &mdash; secures your <b>12 Molten game balls</b></span>
-        <b>Oct 5</b>
-      </div>
-      <a class="link-btn" href="https://coalitionbasketball.com/" target="_blank" rel="noopener">Download the Coalition App</a>
-      <div class="block-title" style="margin-top:14px;">Game Weekends</div>
-      <ul class="datelist">
-        <li class="datelist-item"><div class="datelist-row"><span>Oct 31 &ndash; Nov 1</span></div><div class="attend-slot" data-event-id="game-coalition-1"></div></li>
-        <li class="datelist-item"><div class="datelist-row"><span>Dec 5 &ndash; 6</span></div><div class="attend-slot" data-event-id="game-coalition-2"></div></li>
-        <li class="datelist-item"><div class="datelist-row"><span>Jan 9 &ndash; 10</span></div><div class="attend-slot" data-event-id="game-coalition-3"></div></li>
-        <li class="datelist-item"><div class="datelist-row"><span>Jan 30 &ndash; 31</span></div><div class="attend-slot" data-event-id="game-coalition-4"></div></li>
-        <li class="datelist-item"><div class="datelist-row"><span>Feb 13 &ndash; 14</span></div><div class="attend-slot" data-event-id="game-coalition-5"></div></li>
-        <li class="datelist-item"><div class="datelist-row"><span>Mar 6 &ndash; 7</span></div><div class="attend-slot" data-event-id="game-coalition-6"></div></li>
-        <li class="datelist-item"><div class="datelist-row"><span>Mar 20 &ndash; 21 <span class="tag">All-Star</span></span></div><div class="attend-slot" data-event-id="game-coalition-7"></div></li>
-      </ul>
-    </div>
-
-    <div class="section-title">Ontario Basketball League</div>
-    <div class="card">
-      <div class="league-header">
-        <span class="league-dot"></span>
-        <span class="league-name">OBL</span>
-      </div>
-      <div class="deadline-line">
-        <span>OBL registration deadline</span>
-        <b>Oct 16</b>
-      </div>
-      <div class="block-title" style="margin-top:14px;">Game Weekends</div>
-      <ul class="datelist">
-        <li class="datelist-item"><div class="datelist-row"><span>Nov 20 &ndash; 21</span></div><div class="attend-slot" data-event-id="game-obl-1"></div></li>
-        <li class="datelist-item"><div class="datelist-row"><span>Feb 6 &ndash; 7</span></div><div class="attend-slot" data-event-id="game-obl-2"></div></li>
-        <li class="datelist-item"><div class="datelist-row"><span>Feb 20 &ndash; 21</span></div><div class="attend-slot" data-event-id="game-obl-3"></div></li>
-        <li class="datelist-item"><div class="datelist-row"><span>Apr 10 &ndash; 11 <span class="tag">4-game weekend</span></span></div><div class="attend-slot" data-event-id="game-obl-4"></div></li>
-        <li class="datelist-item"><div class="datelist-row"><span>Apr 17 &ndash; 18</span></div><div class="attend-slot" data-event-id="game-obl-5"></div></li>
-      </ul>
-      <div class="block-title">Tournament</div>
-      <ul class="datelist">
-        <li class="datelist-item"><div class="datelist-row"><span>OBA Cup</span><span class="tag">likely May 14&ndash;16</span></div><div class="attend-slot" data-event-id="game-oba-cup"></div></li>
-      </ul>
-      <div class="note">OBA Cup dates are not yet finalized &mdash; will be confirmed closer to the spring.</div>
     </div>
 
   </section>
@@ -1688,7 +1782,9 @@
   // Next Up: compute next Monday/Wednesday practice
   function pad(n){ return n < 10 ? '0'+n : ''+n; }
   var DOW = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var DOW_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmtDateShort(d){ return DOW_SHORT[d.getDay()] + ', ' + MON[d.getMonth()] + ' ' + d.getDate(); }
 
   var seasonStart = new Date(2026,8,21); // Sept 21, 2026
   var teamEvent = new Date(2026,9,2);    // Oct 2, 2026
@@ -2112,6 +2208,7 @@
 
   var ONE_OFF_EVENTS = [
     {id:'evt-mohawk', type:'event', title:'Mohawk College MBB', sub:'Mohawk College vs. Windsor Lancers — team outing', date:new Date(2026,9,2), badge:'Fri, Oct 2'},
+    {id:'game-shoot360-oct4', type:'game', title:'Exhibition Game vs Panthers', sub:'@Shoot360 Oakville', date:new Date(2026,9,4,17,0,0), badge:'Sun, Oct 4 · 5:00 PM'},
     {id:'game-coalition-1', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2026,9,31), dateEnd:new Date(2026,10,1), badge:'Oct 31 – Nov 1'},
     {id:'game-coalition-2', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2026,11,5), dateEnd:new Date(2026,11,6), badge:'Dec 5 – 6'},
     {id:'game-coalition-3', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2027,0,9), dateEnd:new Date(2027,0,10), badge:'Jan 9 – 10'},
@@ -2137,13 +2234,15 @@
           var iso = isoDate(d);
           if (EXCLUDED_PRACTICE_DATES.indexOf(iso) === -1){
             var pw = PRACTICE_WEEKDAYS[i];
+            var practiceDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
             events.push({
               id: 'practice-' + iso,
               type: 'practice',
               title: 'Practice',
               sub: pw.location,
-              date: new Date(d.getFullYear(), d.getMonth(), d.getDate()),
-              badge: pw.time
+              time: pw.time,
+              date: practiceDate,
+              badge: fmtDateShort(practiceDate)
             });
           }
         }
@@ -2189,7 +2288,11 @@
     return 'badge-navy';
   }
   function titleFor(e){
-    return e.type === 'practice' ? fmtDate(e.date) : e.title;
+    if (e.type === 'game') return /game/i.test(e.title) ? e.title : 'Game: ' + e.title;
+    return e.title;
+  }
+  function subFor(e){
+    return e.type === 'practice' ? (e.time + ' · ' + e.sub) : e.sub;
   }
 
   function renderWeekList(){
@@ -2203,11 +2306,12 @@
     }
     if (emptyNote) emptyNote.style.display = 'none';
     weekListEl.innerHTML = thisWeekEvents.map(function(e){
-      return '<div class="week-card">' +
+      var icon = e.type === 'event' ? '<span class="type-icon type-icon-event">&#128101;</span>' : '';
+      return '<div class="week-card type-' + e.type + '">' +
         '<div class="card-row">' +
           '<div>' +
-            '<div class="card-title">' + escapeHtml(titleFor(e)) + '</div>' +
-            '<div class="card-sub">' + escapeHtml(e.sub) + (e.tentative ? ' · Tentative' : '') + '</div>' +
+            '<div class="card-title">' + icon + escapeHtml(titleFor(e)) + '</div>' +
+            '<div class="card-sub">' + escapeHtml(subFor(e)) + (e.tentative ? ' · Tentative' : '') + '</div>' +
           '</div>' +
           '<span class="badge ' + badgeClassFor(e) + '">' + escapeHtml(e.badge) + '</span>' +
         '</div>' +
@@ -2363,7 +2467,7 @@
 
       var html = '';
       html += '<div class="attend-row">';
-      html += '<button class="attend-btn yes' + (mySel==='yes' ? ' selected':'') + '" type="button" data-attend-btn="yes"><span class="ico">&#10003;</span> Yes, Attending</button>';
+      html += '<button class="attend-btn yes' + (mySel==='yes' ? ' selected':'') + '" type="button" data-attend-btn="yes"><span class="ico">&#10003;</span> Yes, Going</button>';
       html += '<button class="attend-btn no' + (mySel==='no' ? ' selected':'') + '" type="button" data-attend-btn="no"><span class="ico">&#10007;</span> Unavailable</button>';
       html += '</div>';
       html += '<div class="attend-counts">';
@@ -2409,6 +2513,22 @@
     });
   }
   initAttendSlots(document.getElementById('view-schedule'));
+
+  // --- League accordion: only one of the two league cards open at a time ---
+  var leagueToggles = document.querySelectorAll('[data-league-toggle]');
+  leagueToggles.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var id = btn.getAttribute('data-league-toggle');
+      var card = document.getElementById(id);
+      if (!card) return;
+      var wasOpen = card.classList.contains('open');
+      leagueToggles.forEach(function(b){
+        var c = document.getElementById(b.getAttribute('data-league-toggle'));
+        if (c) c.classList.remove('open');
+      });
+      if (!wasOpen) card.classList.add('open');
+    });
+  });
 })();
 </script>
 
