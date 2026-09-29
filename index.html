@@ -798,6 +798,21 @@
   .contact-link:active{background:rgba(15,35,80,0.07);}
   .contact-link svg{width:14px;height:14px;flex-shrink:0;color:var(--navy);}
   .contact-link span{overflow-wrap:anywhere;}
+
+  /* Above the mobile breakpoint, the parent-contact bubble sits beside the
+     photo and notes instead of stacking underneath. */
+  @media (min-width:900px){
+    .roster-detail{
+      flex-direction:row;
+      align-items:flex-start;
+    }
+    .roster-top-row{display:contents;}
+    .roster-contact{
+      flex:1;
+      min-width:0;
+      max-width:420px;
+    }
+  }
   .roster-photo{
     width:108px;
     flex-shrink:0;
