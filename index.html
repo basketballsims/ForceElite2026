@@ -2128,6 +2128,9 @@
   var weekStart = startOfWeek(now);
   var weekEnd = endOfWeek(now);
   var thisWeekEvents = ALL_EVENTS.filter(function(e){
+    // Team Event (e.g. Mohawk College MBB) already has its own permanent
+    // card right below — skip it here so it isn't shown twice on the page.
+    if (e.type === 'event') return false;
     var d0 = e.date || e.dateStart;
     var d1 = e.dateEnd || e.date || e.dateStart;
     return d1 >= weekStart && d0 <= weekEnd;
