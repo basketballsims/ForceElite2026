@@ -388,6 +388,139 @@
     line-height:1.45;
   }
 
+  /* Attendance tracker */
+  .player-chip-row{display:flex;justify-content:flex-end;margin:-2px 2px 10px;}
+  .player-chip{
+    border:1px solid var(--border);
+    background:var(--white);
+    color:var(--navy);
+    font-size:12px;
+    font-weight:700;
+    padding:6px 12px;
+    border-radius:999px;
+    cursor:pointer;
+    font-family:inherit;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .player-chip .chip-dot{width:7px;height:7px;border-radius:50%;background:var(--gold-dark);flex-shrink:0;}
+  .player-chip .chip-switch{color:var(--muted);font-weight:600;}
+
+  .week-card{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:10px;
+    box-shadow:0 1px 3px rgba(15,35,80,0.05);
+  }
+
+  .attend-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid var(--border);
+  }
+  .attend-btn{
+    flex:1;
+    border:1.5px solid var(--border);
+    background:var(--white);
+    color:var(--text);
+    font-weight:700;
+    font-size:12.5px;
+    padding:9px 8px;
+    border-radius:9px;
+    cursor:pointer;
+    font-family:inherit;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    transition:background 0.15s ease,border-color 0.15s ease,color 0.15s ease;
+  }
+  .attend-btn .ico{font-size:12px;line-height:1;}
+  .attend-btn.yes.selected{background:rgba(30,140,90,0.12);border-color:#1e8c5a;color:#1e8c5a;}
+  .attend-btn.no.selected{background:rgba(193,74,58,0.1);border-color:var(--danger);color:var(--danger);}
+  .attend-counts{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:9px;
+    font-size:12px;
+    color:var(--muted);
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .attend-counts-nums{display:flex;gap:10px;flex-wrap:wrap;}
+  .attend-counts-nums .dot-yes{color:#1e8c5a;font-weight:800;}
+  .attend-counts-nums .dot-no{color:var(--danger);font-weight:800;}
+  .attend-detail-btn{
+    background:none;border:none;color:var(--navy-light);font-size:12px;font-weight:700;cursor:pointer;padding:0;font-family:inherit;
+  }
+  .attend-detail{
+    display:none;
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px dashed var(--border);
+    font-size:12.5px;
+  }
+  .attend-detail.open{display:block;}
+  .attend-detail-group{margin-bottom:6px;}
+  .attend-detail-group:last-child{margin-bottom:0;}
+  .attend-detail-label{font-weight:700;color:var(--navy);margin-bottom:3px;}
+  .attend-detail-names{color:var(--muted);}
+  .attend-sync-note{font-size:11px;color:var(--gold-dark);margin-top:8px;font-weight:600;}
+
+  .datelist li.datelist-item{display:block;padding:10px 0;}
+  .datelist-row{display:flex;justify-content:space-between;font-size:13.5px;}
+
+  /* Player picker bottom sheet */
+  .picker-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(8,22,51,0.55);
+    z-index:60;
+  }
+  .picker-overlay.open{display:block;}
+  .picker-sheet{
+    position:fixed;
+    left:0;right:0;bottom:0;
+    max-height:78vh;
+    background:var(--off-white);
+    border-radius:18px 18px 0 0;
+    z-index:70;
+    transform:translateY(100%);
+    transition:transform 0.22s ease;
+    box-shadow:0 -6px 24px rgba(0,0,0,0.25);
+    display:flex;
+    flex-direction:column;
+    padding:16px 0 16px;
+    padding-bottom:max(16px, env(safe-area-inset-bottom));
+  }
+  .picker-sheet.open{transform:translateY(0);}
+  .picker-header{display:flex;align-items:center;justify-content:space-between;padding:0 18px 4px;}
+  .picker-title{font-size:15px;font-weight:800;color:var(--navy);}
+  .picker-sub{font-size:12.5px;color:var(--muted);padding:0 18px 10px;}
+  .picker-list{overflow-y:auto;padding:4px 10px 6px;}
+  .picker-item{
+    display:flex;align-items:center;gap:10px;
+    width:100%;
+    border:none;background:transparent;
+    padding:11px 8px;border-radius:10px;
+    font-family:inherit;text-align:left;cursor:pointer;
+  }
+  .picker-item:active{background:rgba(15,35,80,0.06);}
+  .picker-item-num{
+    width:30px;height:30px;border-radius:50%;
+    background:var(--navy);color:var(--gold);
+    font-size:12px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .picker-item-name{font-size:14px;font-weight:700;color:var(--text);}
+
   /* Workouts */
   .subtabs{
     display:flex;
@@ -783,6 +916,9 @@
     }
   }
 </style>
+<!-- Firebase (Realtime Database) — powers live attendance sync. Safe to load even before FIREBASE_CONFIG below is filled in; the app falls back to this-device-only saving until then. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -842,6 +978,13 @@
   <!-- SCHEDULE VIEW -->
   <section class="view active" id="view-schedule">
 
+    <div class="section-title">This Week</div>
+    <div class="player-chip-row">
+      <button class="player-chip" id="playerChipBtn" type="button"></button>
+    </div>
+    <div id="weekList"></div>
+    <div class="note" id="weekEmptyNote" style="display:none;">Nothing on the schedule this week &mdash; check back soon.</div>
+
     <div class="section-title">Weekly Practices</div>
     <div class="card">
       <div class="card-row">
@@ -872,6 +1015,7 @@
         </div>
         <span class="badge badge-gold">Fri, Oct 2</span>
       </div>
+      <div class="attend-slot" data-event-id="evt-mohawk"></div>
     </div>
 
     <div class="section-title">Coalition League</div>
@@ -887,13 +1031,13 @@
       <a class="link-btn" href="https://coalitionbasketball.com/" target="_blank" rel="noopener">Download the Coalition App</a>
       <div class="block-title" style="margin-top:14px;">Game Weekends</div>
       <ul class="datelist">
-        <li><span>Oct 31 &ndash; Nov 1</span></li>
-        <li><span>Dec 5 &ndash; 6</span></li>
-        <li><span>Jan 9 &ndash; 10</span></li>
-        <li><span>Jan 30 &ndash; 31</span></li>
-        <li><span>Feb 13 &ndash; 14</span></li>
-        <li><span>Mar 6 &ndash; 7</span></li>
-        <li><span>Mar 20 &ndash; 21 <span class="tag">All-Star</span></span></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Oct 31 &ndash; Nov 1</span></div><div class="attend-slot" data-event-id="game-coalition-1"></div></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Dec 5 &ndash; 6</span></div><div class="attend-slot" data-event-id="game-coalition-2"></div></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Jan 9 &ndash; 10</span></div><div class="attend-slot" data-event-id="game-coalition-3"></div></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Jan 30 &ndash; 31</span></div><div class="attend-slot" data-event-id="game-coalition-4"></div></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Feb 13 &ndash; 14</span></div><div class="attend-slot" data-event-id="game-coalition-5"></div></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Mar 6 &ndash; 7</span></div><div class="attend-slot" data-event-id="game-coalition-6"></div></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Mar 20 &ndash; 21 <span class="tag">All-Star</span></span></div><div class="attend-slot" data-event-id="game-coalition-7"></div></li>
       </ul>
     </div>
 
@@ -909,15 +1053,15 @@
       </div>
       <div class="block-title" style="margin-top:14px;">Game Weekends</div>
       <ul class="datelist">
-        <li><span>Nov 20 &ndash; 21</span></li>
-        <li><span>Feb 6 &ndash; 7</span></li>
-        <li><span>Feb 20 &ndash; 21</span></li>
-        <li><span>Apr 10 &ndash; 11 <span class="tag">4-game weekend</span></span></li>
-        <li><span>Apr 17 &ndash; 18</span></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Nov 20 &ndash; 21</span></div><div class="attend-slot" data-event-id="game-obl-1"></div></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Feb 6 &ndash; 7</span></div><div class="attend-slot" data-event-id="game-obl-2"></div></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Feb 20 &ndash; 21</span></div><div class="attend-slot" data-event-id="game-obl-3"></div></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Apr 10 &ndash; 11 <span class="tag">4-game weekend</span></span></div><div class="attend-slot" data-event-id="game-obl-4"></div></li>
+        <li class="datelist-item"><div class="datelist-row"><span>Apr 17 &ndash; 18</span></div><div class="attend-slot" data-event-id="game-obl-5"></div></li>
       </ul>
       <div class="block-title">Tournament</div>
       <ul class="datelist">
-        <li><span>OBA Cup</span><span class="tag">likely May 14&ndash;16</span></li>
+        <li class="datelist-item"><div class="datelist-row"><span>OBA Cup</span><span class="tag">likely May 14&ndash;16</span></div><div class="attend-slot" data-event-id="game-oba-cup"></div></li>
       </ul>
       <div class="note">OBA Cup dates are not yet finalized &mdash; will be confirmed closer to the spring.</div>
     </div>
@@ -1371,6 +1515,16 @@
 </main>
 
 <footer>Burlington <span class="fw">Force Elite</span> &middot; 2026&ndash;27 Season</footer>
+
+<div class="picker-overlay" id="pickerOverlay"></div>
+<div class="picker-sheet" id="pickerSheet">
+  <div class="picker-header">
+    <div class="picker-title">Who's answering?</div>
+    <button class="nav-close-btn" id="pickerCloseBtn" type="button" aria-label="Close">&times;</button>
+  </div>
+  <div class="picker-sub">Pick your player &mdash; this phone will remember it for next time.</div>
+  <div class="picker-list" id="pickerList"></div>
+</div>
 
 <script>
 (function(){
@@ -1848,6 +2002,364 @@
   var quoteIndex = dayOfYear(now) % QUOTES.length;
   var quoteEl = document.getElementById('topQuoteText');
   if (quoteEl) quoteEl.textContent = '“' + QUOTES[quoteIndex] + '”';
+
+  // ========================================================================
+  // Attendance tracker
+  // ========================================================================
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"]/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+    });
+  }
+  function isoDate(d){
+    return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+  }
+
+  // --- Firebase config -----------------------------------------------------
+  // To turn on LIVE cross-device sync: create a free Firebase project
+  // (console.firebase.google.com), add a Realtime Database, and paste your
+  // project's config values below in place of the REPLACE_WITH_* placeholders.
+  // Until then, attendance still works but only saves on each person's own
+  // device (no shared counts).
+  var FIREBASE_CONFIG = {
+    apiKey: "AIzaSyCOQmx0ewbINfcT8aq3bzI65LFqfiKMv_s",
+    authDomain: "force202627.firebaseapp.com",
+    databaseURL: "https://force202627-default-rtdb.firebaseio.com",
+    projectId: "force202627",
+    storageBucket: "force202627.firebasestorage.app",
+    messagingSenderId: "231196064606",
+    appId: "1:231196064606:web:ef4ea2b850cfafd5192dcf"
+  };
+  var FIREBASE_READY = FIREBASE_CONFIG.apiKey.indexOf('REPLACE_WITH') !== 0;
+  var fbDb = null;
+  if (FIREBASE_READY && window.firebase){
+    try {
+      firebase.initializeApp(FIREBASE_CONFIG);
+      fbDb = firebase.database();
+    } catch(e){ fbDb = null; }
+  }
+
+  // --- Roster (for picking who's answering) ---------------------------------
+  var ROSTER_PLAYERS = [
+    {id:'p1', num:1, name:'Hussnain Malik'},
+    {id:'p2', num:2, name:'Ian McGaw'},
+    {id:'p7', num:7, name:'Jonah Quintana'},
+    {id:'p11', num:11, name:'Tyson Krasowski'},
+    {id:'p12', num:12, name:'Nathan Fox'},
+    {id:'p14', num:14, name:'David Nessim'},
+    {id:'p21', num:21, name:'Jonathan Fagbohunka'},
+    {id:'p23', num:23, name:'Nate Dagg'},
+    {id:'p25', num:25, name:'Andrei Calin'},
+    {id:'p33', num:33, name:'Tommy Arboleda'},
+    {id:'p77', num:77, name:'Cohen Sims'}
+  ];
+
+  // --- Schedule data model ---------------------------------------------------
+  var PRACTICE_WEEKDAYS = [
+    {dow:1, time:'6:00 PM', location:'The Playground · Burlington'},
+    {dow:3, time:'8:00 PM', location:'Blakelock HS · Oakville'}
+  ];
+  var SEASON_END = new Date(2027,4,16); // May 16, 2027 — end of OBA Cup window
+  // Add any dates with no practice (holidays, breaks) here as 'YYYY-MM-DD':
+  var EXCLUDED_PRACTICE_DATES = [];
+
+  var ONE_OFF_EVENTS = [
+    {id:'evt-mohawk', type:'event', title:'Mohawk College MBB', sub:'Mohawk College vs. Windsor Lancers — team outing', date:new Date(2026,9,2), badge:'Fri, Oct 2'},
+    {id:'game-coalition-1', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2026,9,31), dateEnd:new Date(2026,10,1), badge:'Oct 31 – Nov 1'},
+    {id:'game-coalition-2', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2026,11,5), dateEnd:new Date(2026,11,6), badge:'Dec 5 – 6'},
+    {id:'game-coalition-3', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2027,0,9), dateEnd:new Date(2027,0,10), badge:'Jan 9 – 10'},
+    {id:'game-coalition-4', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2027,0,30), dateEnd:new Date(2027,0,31), badge:'Jan 30 – 31'},
+    {id:'game-coalition-5', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2027,1,13), dateEnd:new Date(2027,1,14), badge:'Feb 13 – 14'},
+    {id:'game-coalition-6', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2027,2,6), dateEnd:new Date(2027,2,7), badge:'Mar 6 – 7'},
+    {id:'game-coalition-7', type:'game', title:'Coalition League', sub:'Game Weekend · All-Star', dateStart:new Date(2027,2,20), dateEnd:new Date(2027,2,21), badge:'Mar 20 – 21'},
+    {id:'game-obl-1', type:'game', title:'OBL', sub:'Game Weekend', dateStart:new Date(2026,10,20), dateEnd:new Date(2026,10,21), badge:'Nov 20 – 21'},
+    {id:'game-obl-2', type:'game', title:'OBL', sub:'Game Weekend', dateStart:new Date(2027,1,6), dateEnd:new Date(2027,1,7), badge:'Feb 6 – 7'},
+    {id:'game-obl-3', type:'game', title:'OBL', sub:'Game Weekend', dateStart:new Date(2027,1,20), dateEnd:new Date(2027,1,21), badge:'Feb 20 – 21'},
+    {id:'game-obl-4', type:'game', title:'OBL', sub:'Game Weekend · 4-game weekend', dateStart:new Date(2027,3,10), dateEnd:new Date(2027,3,11), badge:'Apr 10 – 11'},
+    {id:'game-obl-5', type:'game', title:'OBL', sub:'Game Weekend', dateStart:new Date(2027,3,17), dateEnd:new Date(2027,3,18), badge:'Apr 17 – 18'},
+    {id:'game-oba-cup', type:'game', title:'OBA Cup', sub:'Tournament', dateStart:new Date(2027,4,14), dateEnd:new Date(2027,4,16), badge:'likely May 14–16', tentative:true}
+  ];
+
+  function generatePractices(){
+    var events = [];
+    var d = new Date(seasonStart.getFullYear(), seasonStart.getMonth(), seasonStart.getDate());
+    while (d <= SEASON_END){
+      var dow = d.getDay();
+      for (var i=0; i<PRACTICE_WEEKDAYS.length; i++){
+        if (PRACTICE_WEEKDAYS[i].dow === dow){
+          var iso = isoDate(d);
+          if (EXCLUDED_PRACTICE_DATES.indexOf(iso) === -1){
+            var pw = PRACTICE_WEEKDAYS[i];
+            events.push({
+              id: 'practice-' + iso,
+              type: 'practice',
+              title: 'Practice',
+              sub: pw.location,
+              date: new Date(d.getFullYear(), d.getMonth(), d.getDate()),
+              badge: pw.time
+            });
+          }
+        }
+      }
+      d.setDate(d.getDate()+1);
+    }
+    return events;
+  }
+
+  function eventSortDate(e){ return e.date || e.dateStart; }
+  var ALL_EVENTS = generatePractices().concat(ONE_OFF_EVENTS).sort(function(a,b){
+    return eventSortDate(a) - eventSortDate(b);
+  });
+
+  function startOfWeek(d){
+    var day = d.getDay();
+    var diff = (day === 0 ? -6 : 1 - day);
+    var monday = new Date(d.getFullYear(), d.getMonth(), d.getDate()+diff);
+    monday.setHours(0,0,0,0);
+    return monday;
+  }
+  function endOfWeek(d){
+    var mon = startOfWeek(d);
+    var sun = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate()+6);
+    sun.setHours(23,59,59,999);
+    return sun;
+  }
+  var weekStart = startOfWeek(now);
+  var weekEnd = endOfWeek(now);
+  var thisWeekEvents = ALL_EVENTS.filter(function(e){
+    var d0 = e.date || e.dateStart;
+    var d1 = e.dateEnd || e.date || e.dateStart;
+    return d1 >= weekStart && d0 <= weekEnd;
+  });
+
+  function badgeClassFor(e){
+    if (e.type === 'practice') return 'badge-navy';
+    if (e.type === 'event') return 'badge-gold';
+    if (e.type === 'game') return e.tentative ? 'badge-danger' : 'badge-navy';
+    return 'badge-navy';
+  }
+  function titleFor(e){
+    return e.type === 'practice' ? fmtDate(e.date) : e.title;
+  }
+
+  function renderWeekList(){
+    var weekListEl = document.getElementById('weekList');
+    var emptyNote = document.getElementById('weekEmptyNote');
+    if (!weekListEl) return;
+    if (!thisWeekEvents.length){
+      weekListEl.innerHTML = '';
+      if (emptyNote) emptyNote.style.display = 'block';
+      return;
+    }
+    if (emptyNote) emptyNote.style.display = 'none';
+    weekListEl.innerHTML = thisWeekEvents.map(function(e){
+      return '<div class="week-card">' +
+        '<div class="card-row">' +
+          '<div>' +
+            '<div class="card-title">' + escapeHtml(titleFor(e)) + '</div>' +
+            '<div class="card-sub">' + escapeHtml(e.sub) + (e.tentative ? ' · Tentative' : '') + '</div>' +
+          '</div>' +
+          '<span class="badge ' + badgeClassFor(e) + '">' + escapeHtml(e.badge) + '</span>' +
+        '</div>' +
+        '<div class="attend-slot" data-event-id="' + e.id + '"></div>' +
+      '</div>';
+    }).join('');
+  }
+  renderWeekList();
+
+  // --- Attendance storage: Firebase (live, cross-device) with a
+  // this-device-only localStorage fallback so the feature still works
+  // before Firebase is configured. -----------------------------------------
+  var ATTEND_KEY = 'forceElite2026_attendance_local';
+  var localAttendanceListeners = {};
+
+  function readLocalAttendance(){
+    try {
+      var raw = localStorage.getItem(ATTEND_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){ return {}; }
+  }
+  function writeLocalAttendance(data){
+    try { localStorage.setItem(ATTEND_KEY, JSON.stringify(data)); } catch(e){}
+  }
+
+  var AttendanceStore = {
+    listen: function(eventId, cb){
+      if (fbDb){
+        var ref = fbDb.ref('attendance/' + eventId);
+        var handler = function(snap){ cb(snap.val() || {}); };
+        ref.on('value', handler);
+        return function(){ ref.off('value', handler); };
+      } else {
+        var all = readLocalAttendance();
+        cb(all[eventId] || {});
+        if (!localAttendanceListeners[eventId]) localAttendanceListeners[eventId] = [];
+        localAttendanceListeners[eventId].push(cb);
+        return function(){
+          var arr = localAttendanceListeners[eventId] || [];
+          var idx = arr.indexOf(cb);
+          if (idx > -1) arr.splice(idx,1);
+        };
+      }
+    },
+    setStatus: function(eventId, playerId, playerName, status){
+      if (fbDb){
+        var ref = fbDb.ref('attendance/' + eventId + '/' + playerId);
+        if (status === null){ ref.remove(); }
+        else { ref.set({status:status, name:playerName, ts: firebase.database.ServerValue.TIMESTAMP}); }
+      } else {
+        var all = readLocalAttendance();
+        if (!all[eventId]) all[eventId] = {};
+        if (status === null){ delete all[eventId][playerId]; }
+        else { all[eventId][playerId] = {status:status, name:playerName, ts:Date.now()}; }
+        writeLocalAttendance(all);
+        var cbs = localAttendanceListeners[eventId] || [];
+        cbs.forEach(function(cb){ cb(all[eventId]); });
+      }
+    }
+  };
+
+  // --- Player identity: "pick once, remember on this device" ---------------
+  var PLAYER_ID_KEY = 'forceElite2026_playerId';
+  var PLAYER_NAME_KEY = 'forceElite2026_playerName';
+
+  function getMyPlayer(){
+    try {
+      var id = localStorage.getItem(PLAYER_ID_KEY);
+      var name = localStorage.getItem(PLAYER_NAME_KEY);
+      if (id && name) return {id:id, name:name};
+    } catch(e){}
+    return null;
+  }
+  function setMyPlayer(id, name){
+    try {
+      localStorage.setItem(PLAYER_ID_KEY, id);
+      localStorage.setItem(PLAYER_NAME_KEY, name);
+    } catch(e){}
+  }
+
+  // --- Player picker bottom sheet -------------------------------------------
+  var pickerOverlay = document.getElementById('pickerOverlay');
+  var pickerSheet = document.getElementById('pickerSheet');
+  var pickerCloseBtn = document.getElementById('pickerCloseBtn');
+  var pickerList = document.getElementById('pickerList');
+  var pendingPickerCallback = null;
+
+  if (pickerList){
+    pickerList.innerHTML = ROSTER_PLAYERS.map(function(p){
+      return '<button class="picker-item" type="button" data-picker-player="'+p.id+'">' +
+        '<span class="picker-item-num">'+p.num+'</span>' +
+        '<span class="picker-item-name">'+escapeHtml(p.name)+'</span>' +
+        '</button>';
+    }).join('');
+  }
+
+  function openPicker(afterSelectCb){
+    pendingPickerCallback = afterSelectCb || null;
+    if (pickerOverlay) pickerOverlay.classList.add('open');
+    if (pickerSheet) pickerSheet.classList.add('open');
+  }
+  function closePicker(){
+    if (pickerOverlay) pickerOverlay.classList.remove('open');
+    if (pickerSheet) pickerSheet.classList.remove('open');
+    pendingPickerCallback = null;
+  }
+  if (pickerOverlay) pickerOverlay.addEventListener('click', closePicker);
+  if (pickerCloseBtn) pickerCloseBtn.addEventListener('click', closePicker);
+  if (pickerList) pickerList.addEventListener('click', function(ev){
+    var btn = ev.target.closest('[data-picker-player]');
+    if (!btn) return;
+    var pid = btn.getAttribute('data-picker-player');
+    var player = null;
+    for (var i=0; i<ROSTER_PLAYERS.length; i++){
+      if (ROSTER_PLAYERS[i].id === pid){ player = ROSTER_PLAYERS[i]; break; }
+    }
+    if (!player) return;
+    setMyPlayer(player.id, player.name);
+    updatePlayerChip();
+    var cb = pendingPickerCallback;
+    closePicker();
+    if (cb) cb(player);
+  });
+
+  var playerChipBtn = document.getElementById('playerChipBtn');
+  function updatePlayerChip(){
+    if (!playerChipBtn) return;
+    var me = getMyPlayer();
+    if (me){
+      playerChipBtn.innerHTML = '<span class="chip-dot"></span>Responding as ' + escapeHtml(me.name) + ' <span class="chip-switch">· switch</span>';
+    } else {
+      playerChipBtn.innerHTML = '<span class="chip-dot"></span>Set your player to answer';
+    }
+  }
+  if (playerChipBtn) playerChipBtn.addEventListener('click', function(){ openPicker(); });
+  updatePlayerChip();
+
+  // --- Rendering Yes/No + live counts into each .attend-slot ----------------
+  function renderAttendSlot(slotEl, eventId){
+    AttendanceStore.listen(eventId, function(data){
+      data = data || {};
+      var me = getMyPlayer();
+      var yesNames = [], noNames = [];
+      ROSTER_PLAYERS.forEach(function(p){
+        var rec = data[p.id];
+        if (rec && rec.status === 'yes') yesNames.push(p.name);
+        else if (rec && rec.status === 'no') noNames.push(p.name);
+      });
+      var noRespCount = ROSTER_PLAYERS.length - yesNames.length - noNames.length;
+      var mySel = (me && data[me.id]) ? data[me.id].status : null;
+
+      var wasOpen = slotEl.querySelector('.attend-detail.open') !== null;
+
+      var html = '';
+      html += '<div class="attend-row">';
+      html += '<button class="attend-btn yes' + (mySel==='yes' ? ' selected':'') + '" type="button" data-attend-btn="yes"><span class="ico">&#10003;</span> Yes, Attending</button>';
+      html += '<button class="attend-btn no' + (mySel==='no' ? ' selected':'') + '" type="button" data-attend-btn="no"><span class="ico">&#10007;</span> Unavailable</button>';
+      html += '</div>';
+      html += '<div class="attend-counts">';
+      html += '<div class="attend-counts-nums"><span><b class="dot-yes">'+yesNames.length+'</b> Yes</span><span><b class="dot-no">'+noNames.length+'</b> No</span><span>'+noRespCount+' no reply</span></div>';
+      html += '<button class="attend-detail-btn" type="button" data-attend-toggle-detail>Who?</button>';
+      html += '</div>';
+      html += '<div class="attend-detail' + (wasOpen ? ' open' : '') + '">';
+      html += '<div class="attend-detail-group"><div class="attend-detail-label">Yes (' + yesNames.length + ')</div><div class="attend-detail-names">' + (yesNames.length ? escapeHtml(yesNames.join(', ')) : '—') + '</div></div>';
+      html += '<div class="attend-detail-group"><div class="attend-detail-label">No (' + noNames.length + ')</div><div class="attend-detail-names">' + (noNames.length ? escapeHtml(noNames.join(', ')) : '—') + '</div></div>';
+      html += '</div>';
+      if (!fbDb){
+        html += '<div class="attend-sync-note">' + (FIREBASE_READY ? 'Live sync unavailable right now — saved on this device only.' : 'Saved on this device only — live sync not set up yet.') + '</div>';
+      }
+      slotEl.innerHTML = html;
+
+      var detailBtn = slotEl.querySelector('[data-attend-toggle-detail]');
+      var detailEl = slotEl.querySelector('.attend-detail');
+      if (detailBtn && detailEl){
+        detailBtn.addEventListener('click', function(){ detailEl.classList.toggle('open'); });
+      }
+      slotEl.querySelectorAll('[data-attend-btn]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var status = btn.getAttribute('data-attend-btn');
+          var current = getMyPlayer();
+          if (!current){
+            openPicker(function(player){
+              AttendanceStore.setStatus(eventId, player.id, player.name, status);
+            });
+            return;
+          }
+          var already = data[current.id] && data[current.id].status === status;
+          AttendanceStore.setStatus(eventId, current.id, current.name, already ? null : status);
+        });
+      });
+    });
+  }
+
+  function initAttendSlots(container){
+    if (!container) return;
+    container.querySelectorAll('.attend-slot').forEach(function(slot){
+      var id = slot.getAttribute('data-event-id');
+      if (id) renderAttendSlot(slot, id);
+    });
+  }
+  initAttendSlots(document.getElementById('view-schedule'));
 })();
 </script>
 
