@@ -1968,6 +1968,13 @@
     return DOW[d.getDay()] + ', ' + MON[d.getMonth()] + ' ' + d.getDate();
   }
 
+  // One-off overrides for specific practice dates (location/time changes for
+  // a single night), keyed by 'YYYY-MM-DD'. Keep in sync with any date added
+  // to EXCLUDED_PRACTICE_DATES / ONE_OFF_EVENTS below for the same reason.
+  var NEXT_UP_OVERRIDES = {
+    '2026-09-30': '8:00 PM – 9:45 PM at Loyola High School, Oakville'
+  };
+
   function nextPracticeFrom(base){
     // returns {date, time, location} for the next Mon(6pm) or Wed(8pm) practice on/after base's date (time-aware)
     var d = new Date(base.getFullYear(), base.getMonth(), base.getDate());
@@ -1980,9 +1987,11 @@
         var hour = dow === 1 ? 18 : 20;
         var practiceDateTime = new Date(check.getFullYear(), check.getMonth(), check.getDate(), hour, 0, 0);
         if (practiceDateTime.getTime() > base.getTime() || i > 0){
+          var iso = check.getFullYear() + '-' + pad(check.getMonth()+1) + '-' + pad(check.getDate());
+          var label = NEXT_UP_OVERRIDES[iso] || (dow === 1 ? '6:00 PM at The Playground, Burlington' : '8:00 PM at Blakelock HS, Oakville');
           return {
             date: check,
-            label: dow === 1 ? '6:00 PM at The Playground, Burlington' : '8:00 PM at Blakelock HS, Oakville'
+            label: label
           };
         }
       }
@@ -2376,9 +2385,10 @@
   ];
   var SEASON_END = new Date(2027,4,16); // May 16, 2027 — end of OBA Cup window
   // Add any dates with no practice (holidays, breaks) here as 'YYYY-MM-DD':
-  var EXCLUDED_PRACTICE_DATES = [];
+  var EXCLUDED_PRACTICE_DATES = ['2026-09-30'];
 
   var ONE_OFF_EVENTS = [
+    {id:'practice-2026-09-30-loyola', type:'practice', title:'Practice', sub:'Loyola High School · Oakville', time:'8:00 PM – 9:45 PM', date:new Date(2026,8,30), badge:'Wed, Sep 30'},
     {id:'evt-mohawk', type:'event', title:'Mohawk College MBB', sub:'Mohawk College vs. Windsor Lancers — team outing', date:new Date(2026,9,2), badge:'Fri, Oct 2'},
     {id:'game-shoot360-oct4', type:'game', title:'Exhibition Game vs Panthers', sub:'@Shoot360 Oakville', date:new Date(2026,9,4,17,0,0), badge:'Sun, Oct 4 · 5:00 PM'},
     {id:'game-burloak-oct13', type:'game', title:'Exhibition Game vs Burloak Elite', sub:'@Burloak', date:new Date(2026,9,13,20,30,0), badge:'Tue, Oct 13 · 8:30 PM'},
