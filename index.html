@@ -1221,7 +1221,7 @@
         <span class="league-chevron">&#9660;</span>
       </button>
       <div class="league-body">
-        <div class="deadline-line">
+        <div class="deadline-line" data-deadline="2026-10-05">
           <span>League payment deadline &mdash; secures your <b>12 Molten game balls</b></span>
           <b>Oct 5</b>
         </div>
@@ -1248,7 +1248,7 @@
         <span class="league-chevron">&#9660;</span>
       </button>
       <div class="league-body">
-        <div class="deadline-line">
+        <div class="deadline-line" data-deadline="2026-10-16">
           <span>OBL registration deadline</span>
           <b>Oct 16</b>
         </div>
@@ -2381,6 +2381,7 @@
   var ONE_OFF_EVENTS = [
     {id:'evt-mohawk', type:'event', title:'Mohawk College MBB', sub:'Mohawk College vs. Windsor Lancers — team outing', date:new Date(2026,9,2), badge:'Fri, Oct 2'},
     {id:'game-shoot360-oct4', type:'game', title:'Exhibition Game vs Panthers', sub:'@Shoot360 Oakville', date:new Date(2026,9,4,17,0,0), badge:'Sun, Oct 4 · 5:00 PM'},
+    {id:'game-burloak-oct13', type:'game', title:'Exhibition Game vs Burloak Elite', sub:'@Burloak', date:new Date(2026,9,13,20,30,0), badge:'Tue, Oct 13 · 8:30 PM'},
     {id:'game-coalition-1', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2026,9,31), dateEnd:new Date(2026,10,1), badge:'Oct 31 – Nov 1'},
     {id:'game-coalition-2', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2026,11,5), dateEnd:new Date(2026,11,6), badge:'Dec 5 – 6'},
     {id:'game-coalition-3', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2027,0,9), dateEnd:new Date(2027,0,10), badge:'Jan 9 – 10'},
@@ -2492,6 +2493,44 @@
     }).join('');
   }
   renderWeekList();
+
+  // --- Hide past games/events/deadlines from the static schedule sections.
+  // (The "This Week" list above is already date-filtered by construction,
+  // so it needs no changes.) A one-off event counts as past once its end
+  // date (or date) has fully elapsed; a league deadline counts as past
+  // once its own date has elapsed. -----------------------------------------
+  function isPast(e){
+    var end = e.dateEnd || e.date;
+    if (!end) return false;
+    var endOfDay = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59, 999);
+    return endOfDay < now;
+  }
+  function hidePastStaticItems(){
+    var eventMap = {};
+    ONE_OFF_EVENTS.forEach(function(e){ eventMap[e.id] = e; });
+
+    document.querySelectorAll('#view-schedule .attend-slot[data-event-id]').forEach(function(slot){
+      if (slot.closest('#weekList')) return;
+      var e = eventMap[slot.getAttribute('data-event-id')];
+      if (!e || !isPast(e)) return;
+      var item = slot.closest('.card, .datelist-item');
+      if (item) item.style.display = 'none';
+    });
+
+    // If the Team Event card itself is now hidden, hide its section title too.
+    var teamEventCard = document.querySelector('#view-schedule .card.type-event');
+    if (teamEventCard && teamEventCard.style.display === 'none'){
+      var prevTitle = teamEventCard.previousElementSibling;
+      if (prevTitle && prevTitle.classList.contains('section-title')) prevTitle.style.display = 'none';
+    }
+
+    document.querySelectorAll('#view-schedule .deadline-line[data-deadline]').forEach(function(dl){
+      var parts = dl.getAttribute('data-deadline').split('-');
+      var dEnd = new Date(+parts[0], +parts[1]-1, +parts[2], 23, 59, 59, 999);
+      if (dEnd < now) dl.style.display = 'none';
+    });
+  }
+  hidePastStaticItems();
 
   // --- Attendance storage: Firebase (live, cross-device) with a
   // this-device-only localStorage fallback so the feature still works
