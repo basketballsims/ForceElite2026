@@ -383,14 +383,20 @@
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    width:22px;height:22px;
+    width:27px;height:27px;
     border-radius:50%;
-    margin-right:7px;
+    margin-right:8px;
     font-size:12px;
-    vertical-align:-5px;
+    vertical-align:-8px;
     flex-shrink:0;
   }
+  .type-icon svg{width:17px;height:17px;display:block;}
   .type-icon-event{background:rgba(15,35,80,0.1);}
+  /* Compact flat icon (no circular background) — league datelist rows and
+     the "This Week" past-item summary line. */
+  .datelist-label{display:inline-flex;align-items:center;gap:6px;}
+  .datelist-icon{width:16px;height:16px;flex-shrink:0;display:inline-flex;}
+  .datelist-icon svg{width:100%;height:100%;display:block;}
   .card.type-practice{
     background:rgba(244,185,66,0.12);
     border-color:rgba(217,154,31,0.35);
@@ -523,7 +529,7 @@
     margin:0 2px 12px;
   }
   .cal-legend-item{display:inline-flex;align-items:center;gap:5px;}
-  .cal-legend-item svg{width:15px;height:15px;flex-shrink:0;}
+  .cal-legend-item svg{width:18px;height:18px;flex-shrink:0;}
   .cal-weekday-row{
     display:grid;
     grid-template-columns:repeat(7,1fr);
@@ -555,6 +561,7 @@
     position:relative;
   }
   .cal-day.is-outside{opacity:0.35;}
+  .cal-day.is-this-week{background:rgba(244,185,66,0.1);}
   .cal-day.is-today{box-shadow:inset 0 0 0 1.5px var(--gold-dark);}
   .cal-day.has-selected{background:rgba(15,35,80,0.07);border-color:var(--navy);}
   .cal-day.has-events{border-color:rgba(15,35,80,0.25);}
@@ -570,7 +577,7 @@
     justify-content:center;
     margin-top:3px;
   }
-  .cal-day-icon{width:13px;height:13px;flex-shrink:0;}
+  .cal-day-icon{width:16px;height:16px;flex-shrink:0;}
   .cal-day-icon svg{width:100%;height:100%;display:block;}
   .cal-day-icon-more{
     font-size:8.5px;
@@ -588,17 +595,42 @@
     margin:2px 2px 10px;
   }
   .cal-detail-card + .cal-detail-card{margin-top:10px;}
-  .cal-icon-inline{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    width:22px;height:22px;
-    border-radius:50%;
-    margin-right:7px;
-    vertical-align:-6px;
-    flex-shrink:0;
+  .week-card.is-past{opacity:0.78;}
+  .attend-readonly{
+    font-size:12.5px;
+    color:var(--muted);
+    background:var(--off-white);
+    border-radius:9px;
+    padding:9px 11px;
+    margin-top:2px;
   }
-  .cal-icon-inline svg{width:14px;height:14px;display:block;}
+  .attend-readonly-label{font-weight:700;color:var(--navy);margin-right:4px;}
+
+  /* "This Week" past-item summary row — compact, read-only, no buttons */
+  .week-card-past{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    background:var(--off-white);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:11px 14px;
+    margin-bottom:10px;
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  .week-card-past .datelist-icon{opacity:0.6;}
+  .week-card-past-text{flex:1;min-width:0;line-height:1.4;}
+  .week-card-past-text b{color:var(--text);font-weight:700;}
+  .week-card-past-date{
+    flex-shrink:0;
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.3px;
+    white-space:nowrap;
+  }
 
   /* Attendance tracker */
   .player-chip-row{display:flex;justify-content:flex-end;margin:-2px 2px 10px;}
@@ -1328,7 +1360,7 @@
     <div class="card type-event">
       <div class="card-row">
         <div>
-          <div class="card-title"><span class="type-icon type-icon-event">&#128101;</span>Mohawk College MBB</div>
+          <div class="card-title"><span class="type-icon type-icon-event" data-static-icon="event"></span>Mohawk College MBB</div>
           <div class="card-sub">Mohawk College vs. Windsor Lancers &mdash; team outing</div>
         </div>
         <span class="badge badge-gold">Fri, Oct 2</span>
@@ -1336,11 +1368,11 @@
       <div class="attend-slot" data-event-id="evt-mohawk"></div>
     </div>
 
-    <div class="section-title">Weekly Practices</div>
+    <div class="section-title">Practice</div>
     <div class="card type-practice">
       <div class="card-row">
         <div>
-          <div class="card-title">Monday</div>
+          <div class="card-title"><span class="type-icon type-icon-practice" data-static-icon="practice"></span>Team Practice</div>
           <div class="card-sub">The Playground &middot; Burlington</div>
         </div>
         <span class="badge badge-navy">6:00 PM</span>
@@ -1349,7 +1381,7 @@
     <div class="card type-practice">
       <div class="card-row">
         <div>
-          <div class="card-title">Wednesday</div>
+          <div class="card-title"><span class="type-icon type-icon-practice" data-static-icon="practice"></span>Team Practice</div>
           <div class="card-sub">Blakelock HS &middot; Oakville</div>
         </div>
         <span class="badge badge-navy">8:00 PM</span>
@@ -1357,7 +1389,7 @@
       <div class="note">Practices run every Monday &amp; Wednesday, starting <b>Monday, September 21</b>.</div>
     </div>
 
-    <div class="section-title">Leagues</div>
+    <div class="section-title">Game</div>
     <div class="league-card open" id="league-coalition">
       <button class="league-header-btn" type="button" data-league-toggle="league-coalition">
         <div class="league-header">
@@ -1374,13 +1406,13 @@
         <a class="link-btn" href="https://coalitionbasketball.com/" target="_blank" rel="noopener">Download the Coalition App</a>
         <div class="block-title" style="margin-top:14px;">Game Weekends</div>
         <ul class="datelist">
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Oct 31 &ndash; Nov 1</span></div><div class="attend-slot" data-event-id="game-coalition-1"></div></li>
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Dec 5 &ndash; 6</span></div><div class="attend-slot" data-event-id="game-coalition-2"></div></li>
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Jan 9 &ndash; 10</span></div><div class="attend-slot" data-event-id="game-coalition-3"></div></li>
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Jan 30 &ndash; 31</span></div><div class="attend-slot" data-event-id="game-coalition-4"></div></li>
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Feb 13 &ndash; 14</span></div><div class="attend-slot" data-event-id="game-coalition-5"></div></li>
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Mar 6 &ndash; 7</span></div><div class="attend-slot" data-event-id="game-coalition-6"></div></li>
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Mar 20 &ndash; 21 <span class="tag">All-Star</span></span></div><div class="attend-slot" data-event-id="game-coalition-7"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Oct 31 &ndash; Nov 1</span></div><div class="attend-slot" data-event-id="game-coalition-1"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Dec 5 &ndash; 6</span></div><div class="attend-slot" data-event-id="game-coalition-2"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Jan 9 &ndash; 10</span></div><div class="attend-slot" data-event-id="game-coalition-3"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Jan 30 &ndash; 31</span></div><div class="attend-slot" data-event-id="game-coalition-4"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Feb 13 &ndash; 14</span></div><div class="attend-slot" data-event-id="game-coalition-5"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Mar 6 &ndash; 7</span></div><div class="attend-slot" data-event-id="game-coalition-6"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Mar 20 &ndash; 21 <span class="tag">All-Star</span></span></div><div class="attend-slot" data-event-id="game-coalition-7"></div></li>
         </ul>
       </div>
     </div>
@@ -1400,15 +1432,15 @@
         </div>
         <div class="block-title" style="margin-top:14px;">Game Weekends</div>
         <ul class="datelist">
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Nov 20 &ndash; 21</span></div><div class="attend-slot" data-event-id="game-obl-1"></div></li>
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Feb 6 &ndash; 7</span></div><div class="attend-slot" data-event-id="game-obl-2"></div></li>
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Feb 20 &ndash; 21</span></div><div class="attend-slot" data-event-id="game-obl-3"></div></li>
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Apr 10 &ndash; 11 <span class="tag">4-game weekend</span></span></div><div class="attend-slot" data-event-id="game-obl-4"></div></li>
-          <li class="datelist-item type-game"><div class="datelist-row"><span>Apr 17 &ndash; 18</span></div><div class="attend-slot" data-event-id="game-obl-5"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Nov 20 &ndash; 21</span></div><div class="attend-slot" data-event-id="game-obl-1"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Feb 6 &ndash; 7</span></div><div class="attend-slot" data-event-id="game-obl-2"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Feb 20 &ndash; 21</span></div><div class="attend-slot" data-event-id="game-obl-3"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Apr 10 &ndash; 11 <span class="tag">4-game weekend</span></span></div><div class="attend-slot" data-event-id="game-obl-4"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>Apr 17 &ndash; 18</span></div><div class="attend-slot" data-event-id="game-obl-5"></div></li>
         </ul>
         <div class="block-title">Tournament</div>
         <ul class="datelist">
-          <li class="datelist-item type-game"><div class="datelist-row"><span>OBA Cup</span><span class="tag">likely May 14&ndash;16</span></div><div class="attend-slot" data-event-id="game-oba-cup"></div></li>
+          <li class="datelist-item type-game"><div class="datelist-row"><span class="datelist-label"><span class="datelist-icon" data-static-icon="game"></span>OBA Cup</span><span class="tag">likely May 14&ndash;16</span></div><div class="attend-slot" data-event-id="game-oba-cup"></div></li>
         </ul>
         <div class="note">OBA Cup dates are not yet finalized &mdash; will be confirmed closer to the spring.</div>
       </div>
@@ -2604,6 +2636,63 @@
     return e.type === 'practice' ? (e.time + ' · ' + e.sub) : e.sub;
   }
 
+  // An event counts as past once its end date (or date) has fully elapsed —
+  // shared by the static-schedule hiding below, the "This Week" past-item
+  // summary rendering, and the Calendar day-detail view, so "past" means the
+  // same thing everywhere in the app.
+  function isPast(e){
+    var end = e.dateEnd || e.date;
+    if (!end) return false;
+    var endOfDay = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59, 999);
+    return endOfDay < now;
+  }
+
+  // --- Type icons (game / practice / team event) — shared by the This Week
+  // list, the static schedule cards, and the Calendar view. -----------------
+  var ICON_GAME =
+    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="2" y="1.5" width="20" height="21" rx="2.4" fill="#c9b878" stroke="#0f2350" stroke-width="1.4"/>' +
+      '<line x1="2" y1="12" x2="22" y2="12" stroke="#0f2350" stroke-width="1.1"/>' +
+      '<circle cx="12" cy="12" r="3.1" fill="none" stroke="#0f2350" stroke-width="1.1"/>' +
+      '<path d="M7 1.5a5 5 0 0 0 10 0" fill="none" stroke="#0f2350" stroke-width="1.1"/>' +
+      '<rect x="9.3" y="1.5" width="5.4" height="3.1" fill="#f4b942"/>' +
+      '<path d="M7 22.5a5 5 0 0 1 10 0" fill="none" stroke="#0f2350" stroke-width="1.1"/>' +
+      '<rect x="9.3" y="19.4" width="5.4" height="3.1" fill="#f4b942"/>' +
+    '</svg>';
+  var ICON_PRACTICE =
+    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="3.3" y="3" width="13" height="18.4" rx="1.6" fill="#ffffff" stroke="#0f2350" stroke-width="1.4"/>' +
+      '<rect x="7.2" y="1.5" width="5.4" height="3" rx="0.8" fill="#1a3768" stroke="#0f2350" stroke-width="0.9"/>' +
+      '<circle cx="16.6" cy="17.1" r="5.7" fill="#d9822b" stroke="#0f2350" stroke-width="1.1"/>' +
+      '<path d="M16.6 11.4V22.8M11.3 17.1h10.6M13 13a7.2 7.2 0 0 0 0 8.2M20.2 13a7.2 7.2 0 0 1 0 8.2" fill="none" stroke="#0f2350" stroke-width="0.8"/>' +
+    '</svg>';
+  var ICON_EVENT =
+    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+      '<circle cx="12" cy="4.6" r="2.3" fill="#d9822b"/>' +
+      '<path d="M8.8 15c0-4.4 1.4-6.8 3.2-6.8s3.2 2.4 3.2 6.8v1.5H8.8z" fill="#d9822b"/>' +
+      '<path d="M12 8.2L9.3 5.6M12 8.2l2.7-2.6" stroke="#d9822b" stroke-width="1.5" stroke-linecap="round"/>' +
+      '<circle cx="5.2" cy="9.4" r="2" fill="#4c8c5a"/>' +
+      '<path d="M2.6 18.6c0-3.6 1-5.6 2.6-5.6s2.6 2 2.6 5.6v1H2.6z" fill="#4c8c5a"/>' +
+      '<path d="M7.2 14.5l2.2-1.9" stroke="#4c8c5a" stroke-width="1.5" stroke-linecap="round"/>' +
+      '<circle cx="18.8" cy="9.4" r="2" fill="#5b84b8"/>' +
+      '<path d="M16.2 18.6c0-3.6 1-5.6 2.6-5.6s2.6 2 2.6 5.6v1h-5.2z" fill="#5b84b8"/>' +
+      '<path d="M16.8 14.5l-2.2-1.9" stroke="#5b84b8" stroke-width="1.5" stroke-linecap="round"/>' +
+    '</svg>';
+  function iconFor(type){
+    if (type === 'game') return ICON_GAME;
+    if (type === 'practice') return ICON_PRACTICE;
+    return ICON_EVENT;
+  }
+  function iconClassFor(type){
+    if (type === 'game') return 'type-icon-game';
+    if (type === 'practice') return 'type-icon-practice';
+    return 'type-icon-event';
+  }
+  // Fill in every static (non-JS-rendered) icon placeholder in the page.
+  document.querySelectorAll('[data-static-icon]').forEach(function(el){
+    el.innerHTML = iconFor(el.getAttribute('data-static-icon'));
+  });
+
   function renderWeekList(){
     var weekListEl = document.getElementById('weekList');
     var emptyNote = document.getElementById('weekEmptyNote');
@@ -2615,7 +2704,16 @@
     }
     if (emptyNote) emptyNote.style.display = 'none';
     weekListEl.innerHTML = thisWeekEvents.map(function(e){
-      var icon = e.type === 'event' ? '<span class="type-icon type-icon-event">&#128101;</span>' : '';
+      if (isPast(e)){
+        // Already happened — no point offering Yes/Going buttons, so show a
+        // compact read-only summary line instead.
+        return '<div class="week-card-past">' +
+          '<span class="datelist-icon">' + iconFor(e.type) + '</span>' +
+          '<span class="week-card-past-text"><b>' + escapeHtml(titleFor(e)) + '</b> &mdash; ' + escapeHtml(e.sub || '') + ' &mdash; <span class="attend-summary-inline" data-summary-id="' + e.id + '">&hellip;</span></span>' +
+          '<span class="week-card-past-date">' + escapeHtml(fmtDateShort(e.date || e.dateStart)) + '</span>' +
+        '</div>';
+      }
+      var icon = '<span class="type-icon ' + iconClassFor(e.type) + '">' + iconFor(e.type) + '</span>';
       return '<div class="week-card type-' + e.type + '">' +
         '<div class="card-row">' +
           '<div>' +
@@ -2679,13 +2777,8 @@
   // (The "This Week" list above is already date-filtered by construction,
   // so it needs no changes.) A one-off event counts as past once its end
   // date (or date) has fully elapsed; a league deadline counts as past
-  // once its own date has elapsed. -----------------------------------------
-  function isPast(e){
-    var end = e.dateEnd || e.date;
-    if (!end) return false;
-    var endOfDay = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59, 999);
-    return endOfDay < now;
-  }
+  // once its own date has elapsed. (isPast() is defined earlier, above
+  // renderWeekList(), since that needs it too.) -----------------------------
   function hidePastStaticItems(){
     var eventMap = {};
     ONE_OFF_EVENTS.forEach(function(e){ eventMap[e.id] = e; });
@@ -2904,7 +2997,40 @@
       if (id) renderAttendSlot(slot, id);
     });
   }
+
+  // --- Read-only attendance summary for past events — no Yes/Going buttons
+  // (voting on something that already happened has no value), but the
+  // tally that was already collected keeps showing, live, for the record. ---
+  function attendSummaryLine(yes, no, noReply){
+    var parts = [yes + ' yes'];
+    if (no > 0) parts.push(no + ' no');
+    parts.push(noReply + ' no reply');
+    if (parts.length === 2) return parts.join(' and ');
+    return parts.slice(0, -1).join(', ') + ', and ' + parts[parts.length - 1];
+  }
+  function renderAttendSummaryInline(slotEl, eventId){
+    AttendanceStore.listen(eventId, function(data){
+      data = data || {};
+      var yes = 0, no = 0;
+      ROSTER_PLAYERS.forEach(function(p){
+        var rec = data[p.id];
+        if (rec && rec.status === 'yes') yes++;
+        else if (rec && rec.status === 'no') no++;
+      });
+      var noReply = ROSTER_PLAYERS.length - yes - no;
+      slotEl.textContent = attendSummaryLine(yes, no, noReply);
+    });
+  }
+  function initAttendSummaries(container){
+    if (!container) return;
+    container.querySelectorAll('.attend-summary-inline[data-summary-id]').forEach(function(el){
+      var id = el.getAttribute('data-summary-id');
+      if (id) renderAttendSummaryInline(el, id);
+    });
+  }
+
   initAttendSlots(document.getElementById('view-schedule'));
+  initAttendSummaries(document.getElementById('view-schedule'));
 
   // --- League accordion: only one of the two league cards open at a time ---
   var leagueToggles = document.querySelectorAll('[data-league-toggle]');
@@ -2936,47 +3062,8 @@
   });
 
   // --- Calendar view: month grid with type icons -----------------------------
-  var ICON_GAME =
-    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
-      '<rect x="2" y="1.5" width="20" height="21" rx="2.4" fill="#c9b878" stroke="#0f2350" stroke-width="1.4"/>' +
-      '<line x1="2" y1="12" x2="22" y2="12" stroke="#0f2350" stroke-width="1.1"/>' +
-      '<circle cx="12" cy="12" r="3.1" fill="none" stroke="#0f2350" stroke-width="1.1"/>' +
-      '<path d="M7 1.5a5 5 0 0 0 10 0" fill="none" stroke="#0f2350" stroke-width="1.1"/>' +
-      '<rect x="9.3" y="1.5" width="5.4" height="3.1" fill="#f4b942"/>' +
-      '<path d="M7 22.5a5 5 0 0 1 10 0" fill="none" stroke="#0f2350" stroke-width="1.1"/>' +
-      '<rect x="9.3" y="19.4" width="5.4" height="3.1" fill="#f4b942"/>' +
-    '</svg>';
-  var ICON_PRACTICE =
-    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
-      '<rect x="3.3" y="3" width="13" height="18.4" rx="1.6" fill="#ffffff" stroke="#0f2350" stroke-width="1.4"/>' +
-      '<rect x="7.2" y="1.5" width="5.4" height="3" rx="0.8" fill="#1a3768" stroke="#0f2350" stroke-width="0.9"/>' +
-      '<circle cx="16.6" cy="17.1" r="5.7" fill="#d9822b" stroke="#0f2350" stroke-width="1.1"/>' +
-      '<path d="M16.6 11.4V22.8M11.3 17.1h10.6M13 13a7.2 7.2 0 0 0 0 8.2M20.2 13a7.2 7.2 0 0 1 0 8.2" fill="none" stroke="#0f2350" stroke-width="0.8"/>' +
-    '</svg>';
-  var ICON_EVENT =
-    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
-      '<circle cx="12" cy="4.6" r="2.3" fill="#d9822b"/>' +
-      '<path d="M8.8 15c0-4.4 1.4-6.8 3.2-6.8s3.2 2.4 3.2 6.8v1.5H8.8z" fill="#d9822b"/>' +
-      '<path d="M12 8.2L9.3 5.6M12 8.2l2.7-2.6" stroke="#d9822b" stroke-width="1.5" stroke-linecap="round"/>' +
-      '<circle cx="5.2" cy="9.4" r="2" fill="#4c8c5a"/>' +
-      '<path d="M2.6 18.6c0-3.6 1-5.6 2.6-5.6s2.6 2 2.6 5.6v1H2.6z" fill="#4c8c5a"/>' +
-      '<path d="M7.2 14.5l2.2-1.9" stroke="#4c8c5a" stroke-width="1.5" stroke-linecap="round"/>' +
-      '<circle cx="18.8" cy="9.4" r="2" fill="#5b84b8"/>' +
-      '<path d="M16.2 18.6c0-3.6 1-5.6 2.6-5.6s2.6 2 2.6 5.6v1h-5.2z" fill="#5b84b8"/>' +
-      '<path d="M16.8 14.5l-2.2-1.9" stroke="#5b84b8" stroke-width="1.5" stroke-linecap="round"/>' +
-    '</svg>';
-
-  function calIconFor(type){
-    if (type === 'game') return ICON_GAME;
-    if (type === 'practice') return ICON_PRACTICE;
-    return ICON_EVENT;
-  }
-  function calIconClassFor(type){
-    if (type === 'game') return 'type-icon-game';
-    if (type === 'practice') return 'type-icon-practice';
-    return 'type-icon-event';
-  }
-
+  // (ICON_GAME/ICON_PRACTICE/ICON_EVENT and iconFor()/iconClassFor() are
+  // defined earlier, above renderWeekList(), and reused here.)
   var calLegendGame = document.getElementById('calLegendGame');
   var calLegendPractice = document.getElementById('calLegendPractice');
   var calLegendEvent = document.getElementById('calLegendEvent');
@@ -3002,7 +3089,7 @@
   function calDayIconsHtml(evs){
     var shown = evs.slice(0,4);
     var html = shown.map(function(e){
-      return '<span class="cal-day-icon" title="' + escapeHtml(titleFor(e)) + '">' + calIconFor(e.type) + '</span>';
+      return '<span class="cal-day-icon" title="' + escapeHtml(titleFor(e)) + '">' + iconFor(e.type) + '</span>';
     }).join('');
     if (evs.length > 4) html += '<span class="cal-day-icon-more">+' + (evs.length-4) + '</span>';
     return html;
@@ -3031,19 +3118,25 @@
     }
     var html = '<div class="cal-detail-heading">' + heading + '</div>';
     html += evs.map(function(e){
-      return '<div class="week-card type-' + e.type + ' cal-detail-card">' +
+      var past = isPast(e);
+      // Already happened — no Yes/Going buttons, just a read-only tally.
+      var attendArea = past
+        ? '<div class="attend-readonly"><span class="attend-readonly-label">Attendance:</span><span class="attend-summary-inline" data-summary-id="' + e.id + '">&hellip;</span></div>'
+        : '<div class="attend-slot" data-event-id="' + e.id + '"></div>';
+      return '<div class="week-card type-' + e.type + ' cal-detail-card' + (past ? ' is-past' : '') + '">' +
         '<div class="card-row">' +
           '<div>' +
-            '<div class="card-title"><span class="cal-icon-inline ' + calIconClassFor(e.type) + '">' + calIconFor(e.type) + '</span>' + escapeHtml(titleFor(e)) + '</div>' +
+            '<div class="card-title"><span class="type-icon ' + iconClassFor(e.type) + '">' + iconFor(e.type) + '</span>' + escapeHtml(titleFor(e)) + '</div>' +
             '<div class="card-sub">' + escapeHtml(subFor(e)) + (e.tentative ? ' · Tentative' : '') + '</div>' +
           '</div>' +
           '<span class="badge ' + badgeClassFor(e) + '">' + escapeHtml(e.badge) + '</span>' +
         '</div>' +
-        '<div class="attend-slot" data-event-id="' + e.id + '"></div>' +
+        attendArea +
       '</div>';
     }).join('');
     calDayDetailEl.innerHTML = html;
     initAttendSlots(calDayDetailEl);
+    initAttendSummaries(calDayDetailEl);
   }
 
   function selectCalDay(iso){
@@ -3081,8 +3174,9 @@
     calGridEl.innerHTML = cells.map(function(cell){
       var evs = eventsOnDay(cell.date);
       var isToday = calSameDay(cell.date, now);
+      var isThisWeek = cell.date >= weekStart && cell.date <= weekEnd;
       var iso = isoDate(cell.date);
-      var cls = 'cal-day' + (cell.outside ? ' is-outside' : '') + (isToday ? ' is-today' : '') + (evs.length ? ' has-events' : '');
+      var cls = 'cal-day' + (cell.outside ? ' is-outside' : '') + (isToday ? ' is-today' : '') + (isThisWeek ? ' is-this-week' : '') + (evs.length ? ' has-events' : '');
       return '<button type="button" class="' + cls + '" data-cal-date="' + iso + '">' +
         '<span class="cal-day-num">' + cell.date.getDate() + '</span>' +
         (evs.length ? '<div class="cal-day-icons">' + calDayIconsHtml(evs) + '</div>' : '') +
