@@ -633,7 +633,23 @@
   }
 
   /* Attendance tracker */
-  .player-chip-row{display:flex;justify-content:flex-end;margin:-2px 2px 10px;}
+  .player-chip-row{display:flex;justify-content:flex-end;gap:8px;margin:-2px 2px 10px;}
+  .admin-chip{
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--muted);
+    font-size:11.5px;
+    font-weight:700;
+    padding:6px 11px;
+    border-radius:999px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .admin-chip.is-admin{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:var(--gold);
+  }
   .player-chip{
     border:1px solid var(--border);
     background:var(--white);
@@ -730,6 +746,33 @@
   .attend-detail-names{color:var(--muted);}
   .attend-sync-note{font-size:11px;color:var(--gold-dark);margin-top:8px;font-weight:600;}
 
+  /* Admin: direct per-player attendance override (password-gated) */
+  .attend-admin{
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px dashed var(--danger);
+  }
+  .attend-admin-toggle{
+    background:none;border:none;color:var(--danger);font-size:11.5px;font-weight:800;
+    cursor:pointer;padding:0;font-family:inherit;text-transform:uppercase;letter-spacing:0.3px;
+  }
+  .attend-admin-list{display:none;margin-top:10px;}
+  .attend-admin-list.open{display:block;}
+  .attend-admin-row{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:8px;padding:6px 0;border-top:1px solid var(--border);
+  }
+  .attend-admin-row:first-child{border-top:none;}
+  .attend-admin-name{font-size:12.5px;font-weight:600;color:var(--text);}
+  .attend-admin-btns{display:flex;gap:5px;flex-shrink:0;}
+  .attend-admin-btns button{
+    border:1.5px solid var(--border);background:var(--white);color:var(--muted);
+    font-size:11px;font-weight:700;padding:5px 9px;border-radius:7px;cursor:pointer;font-family:inherit;
+  }
+  .attend-admin-btns button.selected[data-admin-status="yes"]{background:rgba(30,140,90,0.12);border-color:#1e8c5a;color:#1e8c5a;}
+  .attend-admin-btns button.selected[data-admin-status="no"]{background:rgba(193,74,58,0.1);border-color:var(--danger);color:var(--danger);}
+  .attend-admin-btns button.selected[data-admin-status="clear"]{background:rgba(15,35,80,0.07);border-color:var(--navy);color:var(--navy);}
+
   .datelist li.datelist-item{display:block;padding:10px 0;}
   .datelist-row{display:flex;justify-content:space-between;font-size:13.5px;}
 
@@ -759,8 +802,8 @@
   .picker-sheet.open{transform:translateY(0);}
   .picker-header{display:flex;align-items:center;justify-content:space-between;padding:0 18px 4px;}
   .picker-title{font-size:15px;font-weight:800;color:var(--navy);}
-  .picker-sub{font-size:12.5px;color:var(--muted);padding:0 18px 10px;}
-  .picker-list{overflow-y:auto;padding:4px 10px 6px;}
+  .picker-sub{font-size:12.5px;color:var(--muted);padding:0 18px 10px;flex-shrink:0;}
+  .picker-list{overflow-y:auto;padding:4px 10px 6px;flex:1;min-height:0;}
   .picker-item{
     display:flex;align-items:center;gap:10px;
     width:100%;
@@ -776,6 +819,41 @@
     display:flex;align-items:center;justify-content:center;flex-shrink:0;
   }
   .picker-item-name{font-size:14px;font-weight:700;color:var(--text);}
+  .picker-step{display:none;}
+  .picker-step.active{display:flex;flex-direction:column;flex:1;min-height:0;}
+  .picker-confirm, .picker-warning{padding:6px 18px 4px;}
+  .picker-confirm-name, .picker-warning-text{font-size:14.5px;color:var(--text);margin-bottom:16px;line-height:1.5;}
+  .picker-confirm-name b{color:var(--navy);}
+  .picker-warning-box{
+    background:rgba(193,74,58,0.08);
+    border:1px solid rgba(193,74,58,0.25);
+    border-radius:10px;
+    padding:11px 13px;
+    margin-bottom:16px;
+    font-size:12.5px;
+    color:var(--text);
+    line-height:1.5;
+  }
+  .picker-warning-box b{color:var(--danger);}
+  .picker-actions{display:flex;gap:10px;}
+  .picker-btn{
+    flex:1;
+    border:1.5px solid var(--border);
+    background:var(--white);
+    color:var(--text);
+    font-weight:700;
+    font-size:13.5px;
+    padding:11px 10px;
+    border-radius:10px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .picker-btn.primary{background:var(--navy);border-color:var(--navy);color:var(--white);}
+  .picker-cancel-row{padding:10px 18px 2px;text-align:center;flex-shrink:0;}
+  .picker-cancel-link{
+    background:none;border:none;color:var(--muted);font-size:12.5px;font-weight:600;
+    text-decoration:underline;cursor:pointer;font-family:inherit;padding:6px;
+  }
 
   /* Workouts */
   .subtabs{
@@ -1351,6 +1429,7 @@
 
     <div class="section-title">This Week</div>
     <div class="player-chip-row">
+      <button class="admin-chip" id="adminChipBtn" type="button">Admin</button>
       <button class="player-chip" id="playerChipBtn" type="button"></button>
     </div>
     <div id="weekList"></div>
@@ -2032,8 +2111,34 @@
     <div class="picker-title">Who's answering?</div>
     <button class="nav-close-btn" id="pickerCloseBtn" type="button" aria-label="Close">&times;</button>
   </div>
-  <div class="picker-sub">Pick your player &mdash; this phone will remember it for next time.</div>
-  <div class="picker-list" id="pickerList"></div>
+
+  <div class="picker-step active" id="pickerStepList">
+    <div class="picker-sub">Pick your player &mdash; this phone will remember it for next time.</div>
+    <div class="picker-list" id="pickerList"></div>
+    <div class="picker-cancel-row">
+      <button class="picker-cancel-link" type="button" id="pickerCancelLink">I won&rsquo;t be tracking attendance</button>
+    </div>
+  </div>
+
+  <div class="picker-step" id="pickerStepConfirm">
+    <div class="picker-confirm">
+      <div class="picker-confirm-name">You&rsquo;re responding as <b id="pickerConfirmName">&nbsp;</b>. Is that right?</div>
+      <div class="picker-actions">
+        <button class="picker-btn" type="button" id="pickerConfirmNoBtn">No, go back</button>
+        <button class="picker-btn primary" type="button" id="pickerConfirmYesBtn">Yes, that&rsquo;s me</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="picker-step" id="pickerStepWarning">
+    <div class="picker-warning">
+      <div class="picker-warning-box">Heads up &mdash; <b id="pickerWarningName">&nbsp;</b> already has a response in from another phone. To avoid counting them twice, only continue if that was a mistake (for example, a parent and player sharing one name by accident).</div>
+      <div class="picker-actions">
+        <button class="picker-btn" type="button" id="pickerWarningNoBtn">Pick someone else</button>
+        <button class="picker-btn primary" type="button" id="pickerWarningYesBtn">Continue anyway</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -2861,6 +2966,7 @@
   // --- Player identity: "pick once, remember on this device" ---------------
   var PLAYER_ID_KEY = 'forceElite2026_playerId';
   var PLAYER_NAME_KEY = 'forceElite2026_playerName';
+  var ONBOARD_DECLINED_KEY = 'forceElite2026_onboardDeclined';
 
   function getMyPlayer(){
     try {
@@ -2876,13 +2982,98 @@
       localStorage.setItem(PLAYER_NAME_KEY, name);
     } catch(e){}
   }
+  function hasDeclinedOnboarding(){
+    try { return localStorage.getItem(ONBOARD_DECLINED_KEY) === '1'; } catch(e){ return false; }
+  }
+  function setDeclinedOnboarding(){
+    try { localStorage.setItem(ONBOARD_DECLINED_KEY, '1'); } catch(e){}
+  }
 
-  // --- Player picker bottom sheet -------------------------------------------
+  // --- Device id: a persistent, anonymous per-browser id. Used only to tell
+  // whether a player identity is already being answered for from a
+  // DIFFERENT device, so we can warn before creating a duplicate response
+  // (e.g. a parent picks "Johnny", then Johnny also picks himself — without
+  // this check that would look like two different people, not one). --------
+  var DEVICE_ID_KEY = 'forceElite2026_deviceId';
+  function getDeviceId(){
+    try {
+      var id = localStorage.getItem(DEVICE_ID_KEY);
+      if (!id){
+        id = 'dev-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,10);
+        localStorage.setItem(DEVICE_ID_KEY, id);
+      }
+      return id;
+    } catch(e){
+      return 'dev-' + Math.random().toString(36).slice(2,10);
+    }
+  }
+  var MY_DEVICE_ID = getDeviceId();
+
+  // --- Claim tracking: which device last picked each player. Same
+  // Firebase-with-localStorage-fallback shape as AttendanceStore. ----------
+  var CLAIM_KEY = 'forceElite2026_claims_local';
+  function readLocalClaims(){
+    try { var raw = localStorage.getItem(CLAIM_KEY); return raw ? JSON.parse(raw) : {}; }
+    catch(e){ return {}; }
+  }
+  function writeLocalClaims(data){
+    try { localStorage.setItem(CLAIM_KEY, JSON.stringify(data)); } catch(e){}
+  }
+  var ClaimStore = {
+    check: function(playerId, cb){
+      if (fbDb){
+        fbDb.ref('claims/' + playerId).once('value').then(function(snap){
+          cb(snap.val() || null);
+        }).catch(function(){ cb(null); });
+      } else {
+        cb(readLocalClaims()[playerId] || null);
+      }
+    },
+    claim: function(playerId, playerName){
+      if (fbDb){
+        fbDb.ref('claims/' + playerId).set({
+          deviceId: MY_DEVICE_ID, name: playerName, ts: firebase.database.ServerValue.TIMESTAMP
+        });
+      } else {
+        var all = readLocalClaims();
+        all[playerId] = {deviceId: MY_DEVICE_ID, name: playerName, ts: Date.now()};
+        writeLocalClaims(all);
+      }
+    }
+  };
+
+  // --- Admin mode: a simple password gate (not real authentication — this
+  // is a private team app) that lets Jeremy correct any player's attendance
+  // directly, from the same spot as "Responding as…". -----------------------
+  var ADMIN_FLAG_KEY = 'forceElite2026_isAdmin';
+  var ADMIN_PASSWORD = 'jeremy';
+  function isAdmin(){
+    try { return localStorage.getItem(ADMIN_FLAG_KEY) === '1'; } catch(e){ return false; }
+  }
+  function setAdminOn(on){
+    try {
+      if (on) localStorage.setItem(ADMIN_FLAG_KEY, '1');
+      else localStorage.removeItem(ADMIN_FLAG_KEY);
+    } catch(e){}
+  }
+
+  // --- Player picker: pick → confirm → (duplicate-claim warning if needed) -
   var pickerOverlay = document.getElementById('pickerOverlay');
   var pickerSheet = document.getElementById('pickerSheet');
   var pickerCloseBtn = document.getElementById('pickerCloseBtn');
   var pickerList = document.getElementById('pickerList');
+  var pickerStepList = document.getElementById('pickerStepList');
+  var pickerStepConfirm = document.getElementById('pickerStepConfirm');
+  var pickerStepWarning = document.getElementById('pickerStepWarning');
+  var pickerConfirmName = document.getElementById('pickerConfirmName');
+  var pickerWarningName = document.getElementById('pickerWarningName');
+  var pickerCancelLink = document.getElementById('pickerCancelLink');
+  var pickerConfirmYesBtn = document.getElementById('pickerConfirmYesBtn');
+  var pickerConfirmNoBtn = document.getElementById('pickerConfirmNoBtn');
+  var pickerWarningYesBtn = document.getElementById('pickerWarningYesBtn');
+  var pickerWarningNoBtn = document.getElementById('pickerWarningNoBtn');
   var pendingPickerCallback = null;
+  var pendingPickerPlayer = null;
 
   if (pickerList){
     pickerList.innerHTML = ROSTER_PLAYERS.map(function(p){
@@ -2893,8 +3084,18 @@
     }).join('');
   }
 
+  function showPickerStep(step){
+    [pickerStepList, pickerStepConfirm, pickerStepWarning].forEach(function(el){
+      if (el) el.classList.remove('active');
+    });
+    var target = step === 'list' ? pickerStepList : step === 'confirm' ? pickerStepConfirm : pickerStepWarning;
+    if (target) target.classList.add('active');
+  }
+
   function openPicker(afterSelectCb){
     pendingPickerCallback = afterSelectCb || null;
+    pendingPickerPlayer = null;
+    showPickerStep('list');
     if (pickerOverlay) pickerOverlay.classList.add('open');
     if (pickerSheet) pickerSheet.classList.add('open');
   }
@@ -2902,9 +3103,27 @@
     if (pickerOverlay) pickerOverlay.classList.remove('open');
     if (pickerSheet) pickerSheet.classList.remove('open');
     pendingPickerCallback = null;
+    pendingPickerPlayer = null;
   }
-  if (pickerOverlay) pickerOverlay.addEventListener('click', closePicker);
-  if (pickerCloseBtn) pickerCloseBtn.addEventListener('click', closePicker);
+  function dismissPicker(){
+    // Closing without picking anyone — if this device still has no identity,
+    // remember that so the first-time prompt doesn't nag again every visit.
+    if (!getMyPlayer()) setDeclinedOnboarding();
+    closePicker();
+  }
+  function finalizePick(player){
+    setMyPlayer(player.id, player.name);
+    ClaimStore.claim(player.id, player.name);
+    updatePlayerChip();
+    var cb = pendingPickerCallback;
+    closePicker();
+    if (cb) cb(player);
+  }
+
+  if (pickerOverlay) pickerOverlay.addEventListener('click', dismissPicker);
+  if (pickerCloseBtn) pickerCloseBtn.addEventListener('click', dismissPicker);
+  if (pickerCancelLink) pickerCancelLink.addEventListener('click', dismissPicker);
+
   if (pickerList) pickerList.addEventListener('click', function(ev){
     var btn = ev.target.closest('[data-picker-player]');
     if (!btn) return;
@@ -2914,11 +3133,32 @@
       if (ROSTER_PLAYERS[i].id === pid){ player = ROSTER_PLAYERS[i]; break; }
     }
     if (!player) return;
-    setMyPlayer(player.id, player.name);
-    updatePlayerChip();
-    var cb = pendingPickerCallback;
-    closePicker();
-    if (cb) cb(player);
+    pendingPickerPlayer = player;
+    if (pickerConfirmName) pickerConfirmName.textContent = player.name;
+    showPickerStep('confirm');
+  });
+
+  if (pickerConfirmNoBtn) pickerConfirmNoBtn.addEventListener('click', function(){
+    showPickerStep('list');
+  });
+  if (pickerConfirmYesBtn) pickerConfirmYesBtn.addEventListener('click', function(){
+    var player = pendingPickerPlayer;
+    if (!player) return;
+    ClaimStore.check(player.id, function(claim){
+      if (claim && claim.deviceId && claim.deviceId !== MY_DEVICE_ID){
+        if (pickerWarningName) pickerWarningName.textContent = player.name;
+        showPickerStep('warning');
+      } else {
+        finalizePick(player);
+      }
+    });
+  });
+
+  if (pickerWarningNoBtn) pickerWarningNoBtn.addEventListener('click', function(){
+    showPickerStep('list');
+  });
+  if (pickerWarningYesBtn) pickerWarningYesBtn.addEventListener('click', function(){
+    if (pendingPickerPlayer) finalizePick(pendingPickerPlayer);
   });
 
   var playerChipBtn = document.getElementById('playerChipBtn');
@@ -2933,6 +3173,39 @@
   }
   if (playerChipBtn) playerChipBtn.addEventListener('click', function(){ openPicker(); });
   updatePlayerChip();
+
+  // --- Admin chip: password-gated. Same spot as "Responding as…" ----------
+  var adminChipBtn = document.getElementById('adminChipBtn');
+  function updateAdminChip(){
+    if (!adminChipBtn) return;
+    adminChipBtn.textContent = isAdmin() ? 'Admin: on' : 'Admin';
+    adminChipBtn.classList.toggle('is-admin', isAdmin());
+  }
+  if (adminChipBtn) adminChipBtn.addEventListener('click', function(){
+    if (isAdmin()){
+      if (window.confirm('Turn off admin mode on this device?')){
+        setAdminOn(false);
+        window.location.reload();
+      }
+      return;
+    }
+    var pw = window.prompt('Admin password:');
+    if (pw === null) return;
+    if (pw.trim().toLowerCase() === ADMIN_PASSWORD){
+      setAdminOn(true);
+      window.location.reload();
+    } else {
+      window.alert('Incorrect password.');
+    }
+  });
+  updateAdminChip();
+
+  // First-time visitor on this device: nobody's been picked yet and they
+  // haven't explicitly said they're not tracking attendance — ask who
+  // they're responding for (practices, games, and team events).
+  if (!getMyPlayer() && !hasDeclinedOnboarding()){
+    setTimeout(function(){ openPicker(); }, 400);
+  }
 
   // --- Rendering Yes/No + live counts into each .attend-slot ----------------
   function renderAttendSlot(slotEl, eventId){
@@ -2966,6 +3239,25 @@
       if (!fbDb){
         html += '<div class="attend-sync-note">' + (FIREBASE_READY ? 'Live sync unavailable right now — saved on this device only.' : 'Saved on this device only — live sync not set up yet.') + '</div>';
       }
+      if (isAdmin()){
+        var wasAdminOpen = slotEl.querySelector('.attend-admin-list.open') !== null;
+        html += '<div class="attend-admin">';
+        html += '<button class="attend-admin-toggle" type="button" data-admin-toggle>Admin: edit attendance</button>';
+        html += '<div class="attend-admin-list' + (wasAdminOpen ? ' open' : '') + '">';
+        html += ROSTER_PLAYERS.map(function(p){
+          var st = data[p.id] ? data[p.id].status : null;
+          return '<div class="attend-admin-row">' +
+            '<span class="attend-admin-name">' + escapeHtml(p.name) + '</span>' +
+            '<div class="attend-admin-btns">' +
+              '<button type="button" data-admin-player="' + p.id + '" data-admin-status="yes" class="' + (st === 'yes' ? 'selected' : '') + '">Yes</button>' +
+              '<button type="button" data-admin-player="' + p.id + '" data-admin-status="no" class="' + (st === 'no' ? 'selected' : '') + '">No</button>' +
+              '<button type="button" data-admin-player="' + p.id + '" data-admin-status="clear" class="' + (!st ? 'selected' : '') + '">Clear</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+        html += '</div>';
+        html += '</div>';
+      }
       slotEl.innerHTML = html;
 
       var detailBtn = slotEl.querySelector('[data-attend-toggle-detail]');
@@ -2985,6 +3277,24 @@
           }
           var already = data[current.id] && data[current.id].status === status;
           AttendanceStore.setStatus(eventId, current.id, current.name, already ? null : status);
+        });
+      });
+
+      var adminToggleBtn = slotEl.querySelector('[data-admin-toggle]');
+      var adminListEl = slotEl.querySelector('.attend-admin-list');
+      if (adminToggleBtn && adminListEl){
+        adminToggleBtn.addEventListener('click', function(){ adminListEl.classList.toggle('open'); });
+      }
+      slotEl.querySelectorAll('[data-admin-status]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var pid = btn.getAttribute('data-admin-player');
+          var status = btn.getAttribute('data-admin-status');
+          var p = null;
+          for (var i=0; i<ROSTER_PLAYERS.length; i++){
+            if (ROSTER_PLAYERS[i].id === pid){ p = ROSTER_PLAYERS[i]; break; }
+          }
+          if (!p) return;
+          AttendanceStore.setStatus(eventId, p.id, p.name, status === 'clear' ? null : status);
         });
       });
     });
