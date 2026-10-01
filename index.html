@@ -2719,9 +2719,10 @@
   var weekStart = startOfWeek(now);
   var weekEnd = endOfWeek(now);
   var thisWeekEvents = ALL_EVENTS.filter(function(e){
-    // Team Event (e.g. Mohawk College MBB) already has its own permanent
-    // card right below — skip it here so it isn't shown twice on the page.
-    if (e.type === 'event') return false;
+    // Team events (e.g. Mohawk College MBB) now show inline here too, in
+    // proper chronological order alongside practices and games — see the
+    // static "Team Event" card below, which hides itself once its event
+    // is already covered here, to avoid showing it twice.
     var d0 = e.date || e.dateStart;
     var d1 = e.dateEnd || e.date || e.dateStart;
     return d1 >= weekStart && d0 <= weekEnd;
@@ -2896,8 +2897,22 @@
       if (item) item.style.display = 'none';
     });
 
-    // If the Team Event card itself is now hidden, hide its section title too.
+    // The Team Event static card duplicates whatever's already shown inline
+    // in This Week (in proper chronological order alongside practices and
+    // games) — hide it whenever its event falls within the current week.
     var teamEventCard = document.querySelector('#view-schedule .card.type-event');
+    if (teamEventCard){
+      var teSlot = teamEventCard.querySelector('.attend-slot[data-event-id]');
+      var te = teSlot ? eventMap[teSlot.getAttribute('data-event-id')] : null;
+      if (te){
+        var teStart = te.date || te.dateStart;
+        var teEnd = te.dateEnd || te.date || te.dateStart;
+        if (teEnd >= weekStart && teStart <= weekEnd) teamEventCard.style.display = 'none';
+      }
+    }
+
+    // If the Team Event card itself is now hidden (past, or already shown
+    // inline in This Week), hide its section title too.
     if (teamEventCard && teamEventCard.style.display === 'none'){
       var prevTitle = teamEventCard.previousElementSibling;
       if (prevTitle && prevTitle.classList.contains('section-title')) prevTitle.style.display = 'none';
