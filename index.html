@@ -461,6 +461,145 @@
     line-height:1.45;
   }
 
+  /* Schedule: List / Calendar toggle + calendar month view */
+  .sched-toggle{
+    display:flex;
+    gap:8px;
+    margin:2px 2px 16px;
+  }
+  .sched-toggle-btn{
+    border:1.5px solid var(--border);
+    background:var(--white);
+    color:var(--navy);
+    font-weight:700;
+    font-size:13px;
+    padding:9px 16px;
+    border-radius:999px;
+    font-family:inherit;
+    cursor:pointer;
+  }
+  .sched-toggle-btn.active{
+    background:var(--navy);
+    border-color:var(--navy);
+    color:var(--gold);
+  }
+  .sched-panel{display:none;}
+  .sched-panel.active{display:block;}
+
+  .type-icon-game{background:rgba(47,111,237,0.12);}
+  .type-icon-practice{background:rgba(244,185,66,0.2);}
+
+  .cal-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:2px 2px 12px;
+  }
+  .cal-nav-btn{
+    width:32px;height:32px;
+    border-radius:50%;
+    border:1.5px solid var(--border);
+    background:var(--white);
+    color:var(--navy);
+    font-size:17px;
+    font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    line-height:1;
+  }
+  .cal-nav-btn:active{background:rgba(15,35,80,0.06);}
+  .cal-month-label{
+    font-size:15.5px;
+    font-weight:800;
+    color:var(--navy);
+  }
+  .cal-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--muted);
+    margin:0 2px 12px;
+  }
+  .cal-legend-item{display:inline-flex;align-items:center;gap:5px;}
+  .cal-legend-item svg{width:15px;height:15px;flex-shrink:0;}
+  .cal-weekday-row{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    text-align:center;
+    font-size:10px;
+    font-weight:700;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    margin-bottom:6px;
+  }
+  .cal-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:4px;
+  }
+  .cal-day{
+    aspect-ratio:1;
+    min-height:44px;
+    border-radius:10px;
+    border:1.5px solid var(--border);
+    background:var(--white);
+    padding:3px 2px 4px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    font-family:inherit;
+    cursor:pointer;
+    position:relative;
+  }
+  .cal-day.is-outside{opacity:0.35;}
+  .cal-day.is-today{box-shadow:inset 0 0 0 1.5px var(--gold-dark);}
+  .cal-day.has-selected{background:rgba(15,35,80,0.07);border-color:var(--navy);}
+  .cal-day.has-events{border-color:rgba(15,35,80,0.25);}
+  .cal-day-num{
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--text);
+  }
+  .cal-day-icons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:2px;
+    justify-content:center;
+    margin-top:3px;
+  }
+  .cal-day-icon{width:13px;height:13px;flex-shrink:0;}
+  .cal-day-icon svg{width:100%;height:100%;display:block;}
+  .cal-day-icon-more{
+    font-size:8.5px;
+    font-weight:800;
+    color:var(--navy);
+    align-self:center;
+  }
+  .cal-day-detail{margin-top:18px;}
+  .cal-detail-heading{
+    font-size:13.5px;
+    font-weight:800;
+    color:var(--navy);
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    margin:2px 2px 10px;
+  }
+  .cal-detail-card + .cal-detail-card{margin-top:10px;}
+  .cal-icon-inline{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:22px;height:22px;
+    border-radius:50%;
+    margin-right:7px;
+    vertical-align:-6px;
+    flex-shrink:0;
+  }
+  .cal-icon-inline svg{width:14px;height:14px;display:block;}
+
   /* Attendance tracker */
   .player-chip-row{display:flex;justify-content:flex-end;margin:-2px 2px 10px;}
   .player-chip{
@@ -1171,6 +1310,13 @@
   <!-- SCHEDULE VIEW -->
   <section class="view active" id="view-schedule">
 
+    <div class="sched-toggle">
+      <button class="sched-toggle-btn active" type="button" data-sched-view="list">List</button>
+      <button class="sched-toggle-btn" type="button" data-sched-view="calendar">Calendar</button>
+    </div>
+
+    <div class="sched-panel active" id="schedPanel-list">
+
     <div class="section-title">This Week</div>
     <div class="player-chip-row">
       <button class="player-chip" id="playerChipBtn" type="button"></button>
@@ -1266,6 +1412,26 @@
         </ul>
         <div class="note">OBA Cup dates are not yet finalized &mdash; will be confirmed closer to the spring.</div>
       </div>
+    </div>
+
+    </div>
+
+    <div class="sched-panel" id="schedPanel-calendar">
+      <div class="cal-header">
+        <button class="cal-nav-btn" id="calPrevBtn" type="button" aria-label="Previous month">&#8249;</button>
+        <div class="cal-month-label" id="calMonthLabel">&nbsp;</div>
+        <button class="cal-nav-btn" id="calNextBtn" type="button" aria-label="Next month">&#8250;</button>
+      </div>
+      <div class="cal-legend">
+        <span class="cal-legend-item" id="calLegendGame">Game</span>
+        <span class="cal-legend-item" id="calLegendPractice">Practice</span>
+        <span class="cal-legend-item" id="calLegendEvent">Team Event</span>
+      </div>
+      <div class="cal-weekday-row">
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-day-detail" id="calDayDetail"></div>
     </div>
 
   </section>
@@ -1968,51 +2134,11 @@
     return DOW[d.getDay()] + ', ' + MON[d.getMonth()] + ' ' + d.getDate();
   }
 
-  // One-off overrides for specific practice dates (location/time changes for
-  // a single night), keyed by 'YYYY-MM-DD'. Keep in sync with any date added
-  // to EXCLUDED_PRACTICE_DATES / ONE_OFF_EVENTS below for the same reason.
-  var NEXT_UP_OVERRIDES = {
-    '2026-09-30': '8:00 PM – 9:45 PM at Loyola High School, Oakville'
-  };
-
-  function nextPracticeFrom(base){
-    // returns {date, time, location} for the next Mon(6pm) or Wed(8pm) practice on/after base's date (time-aware)
-    var d = new Date(base.getFullYear(), base.getMonth(), base.getDate());
-    for (var i=0; i<14; i++){
-      var check = new Date(d.getTime());
-      check.setDate(d.getDate()+i);
-      if (check < seasonStart) continue;
-      var dow = check.getDay();
-      if (dow === 1 || dow === 3){
-        var hour = dow === 1 ? 18 : 20;
-        var practiceDateTime = new Date(check.getFullYear(), check.getMonth(), check.getDate(), hour, 0, 0);
-        if (practiceDateTime.getTime() > base.getTime() || i > 0){
-          var iso = check.getFullYear() + '-' + pad(check.getMonth()+1) + '-' + pad(check.getDate());
-          var label = NEXT_UP_OVERRIDES[iso] || (dow === 1 ? '6:00 PM at The Playground, Burlington' : '8:00 PM at Blakelock HS, Oakville');
-          return {
-            date: check,
-            label: label
-          };
-        }
-      }
-    }
-    return null;
-  }
-
-  var np = nextPracticeFrom(now);
+  // "Next Up" banner text is filled in further down, once the full
+  // practice/game/event schedule (ALL_EVENTS) has been built — see
+  // "Next Up banner: next practice, game, or team event" below.
   var nextUpText = document.getElementById('nextUpText');
   var nextUpSub = document.getElementById('nextUpSub');
-
-  if (now < seasonStart){
-    nextUpText.textContent = 'Season kicks off ' + fmtDate(seasonStart);
-    nextUpSub.textContent = 'First practice: Monday, Sept 21 at 6:00 PM, The Playground';
-  } else if (np){
-    nextUpText.textContent = 'Practice — ' + fmtDate(np.date);
-    nextUpSub.textContent = np.label;
-  } else {
-    nextUpText.textContent = 'Check the Schedule tab';
-    nextUpSub.textContent = '';
-  }
 
   // Daily motivational quote — same quote all day for everyone, rotates automatically
   var QUOTES = [
@@ -2504,6 +2630,51 @@
   }
   renderWeekList();
 
+  // --- Next Up banner: next practice, game, or team event (whichever is
+  // soonest), pulled from the same ALL_EVENTS schedule used everywhere else
+  // so it automatically reflects one-off overrides (e.g. a relocated
+  // practice) and every event type, not just the recurring practice nights.
+  function fmtTimeOfDay(d){
+    var h = d.getHours(), min = d.getMinutes();
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    var h12 = h % 12; if (h12 === 0) h12 = 12;
+    return h12 + ':' + pad(min) + ' ' + ampm;
+  }
+  function nextUpSubFor(e){
+    if (e.type === 'practice') return e.time + ' at ' + e.sub;
+    if (e.type === 'game'){
+      var hasTime = e.date && (e.date.getHours() !== 0 || e.date.getMinutes() !== 0);
+      return (hasTime ? fmtTimeOfDay(e.date) + ' ' : '') + (e.sub || '');
+    }
+    return e.sub || '';
+  }
+  function findNextUpEvent(){
+    // ALL_EVENTS is sorted by start date; return the first one that hasn't
+    // fully elapsed yet (same end-of-day cutoff used to hide past items).
+    for (var i=0; i<ALL_EVENTS.length; i++){
+      var e = ALL_EVENTS[i];
+      var end = e.dateEnd || e.date;
+      var endOfDay = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59, 999);
+      if (endOfDay.getTime() >= now.getTime()) return e;
+    }
+    return null;
+  }
+
+  if (now < seasonStart){
+    nextUpText.textContent = 'Season kicks off ' + fmtDate(seasonStart);
+    nextUpSub.textContent = 'First practice: Monday, Sept 21 at 6:00 PM, The Playground';
+  } else {
+    var nextUpEvent = findNextUpEvent();
+    if (nextUpEvent){
+      var nextUpDate = nextUpEvent.date || nextUpEvent.dateStart;
+      nextUpText.textContent = titleFor(nextUpEvent) + ' — ' + fmtDate(nextUpDate);
+      nextUpSub.textContent = nextUpSubFor(nextUpEvent);
+    } else {
+      nextUpText.textContent = 'Check the Schedule tab';
+      nextUpSub.textContent = '';
+    }
+  }
+
   // --- Hide past games/events/deadlines from the static schedule sections.
   // (The "This Week" list above is already date-filtered by construction,
   // so it needs no changes.) A one-off event counts as past once its end
@@ -2750,6 +2921,200 @@
       if (!wasOpen) card.classList.add('open');
     });
   });
+
+  // --- Schedule: List / Calendar toggle -------------------------------------
+  var schedToggleBtns = document.querySelectorAll('.sched-toggle-btn');
+  var schedPanels = document.querySelectorAll('.sched-panel');
+  schedToggleBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      schedToggleBtns.forEach(function(b){ b.classList.remove('active'); });
+      schedPanels.forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      var panel = document.getElementById('schedPanel-' + btn.getAttribute('data-sched-view'));
+      if (panel) panel.classList.add('active');
+    });
+  });
+
+  // --- Calendar view: month grid with type icons -----------------------------
+  var ICON_GAME =
+    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="2" y="1.5" width="20" height="21" rx="2.4" fill="#c9b878" stroke="#0f2350" stroke-width="1.4"/>' +
+      '<line x1="2" y1="12" x2="22" y2="12" stroke="#0f2350" stroke-width="1.1"/>' +
+      '<circle cx="12" cy="12" r="3.1" fill="none" stroke="#0f2350" stroke-width="1.1"/>' +
+      '<path d="M7 1.5a5 5 0 0 0 10 0" fill="none" stroke="#0f2350" stroke-width="1.1"/>' +
+      '<rect x="9.3" y="1.5" width="5.4" height="3.1" fill="#f4b942"/>' +
+      '<path d="M7 22.5a5 5 0 0 1 10 0" fill="none" stroke="#0f2350" stroke-width="1.1"/>' +
+      '<rect x="9.3" y="19.4" width="5.4" height="3.1" fill="#f4b942"/>' +
+    '</svg>';
+  var ICON_PRACTICE =
+    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="3.3" y="3" width="13" height="18.4" rx="1.6" fill="#ffffff" stroke="#0f2350" stroke-width="1.4"/>' +
+      '<rect x="7.2" y="1.5" width="5.4" height="3" rx="0.8" fill="#1a3768" stroke="#0f2350" stroke-width="0.9"/>' +
+      '<circle cx="16.6" cy="17.1" r="5.7" fill="#d9822b" stroke="#0f2350" stroke-width="1.1"/>' +
+      '<path d="M16.6 11.4V22.8M11.3 17.1h10.6M13 13a7.2 7.2 0 0 0 0 8.2M20.2 13a7.2 7.2 0 0 1 0 8.2" fill="none" stroke="#0f2350" stroke-width="0.8"/>' +
+    '</svg>';
+  var ICON_EVENT =
+    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+      '<circle cx="12" cy="4.6" r="2.3" fill="#d9822b"/>' +
+      '<path d="M8.8 15c0-4.4 1.4-6.8 3.2-6.8s3.2 2.4 3.2 6.8v1.5H8.8z" fill="#d9822b"/>' +
+      '<path d="M12 8.2L9.3 5.6M12 8.2l2.7-2.6" stroke="#d9822b" stroke-width="1.5" stroke-linecap="round"/>' +
+      '<circle cx="5.2" cy="9.4" r="2" fill="#4c8c5a"/>' +
+      '<path d="M2.6 18.6c0-3.6 1-5.6 2.6-5.6s2.6 2 2.6 5.6v1H2.6z" fill="#4c8c5a"/>' +
+      '<path d="M7.2 14.5l2.2-1.9" stroke="#4c8c5a" stroke-width="1.5" stroke-linecap="round"/>' +
+      '<circle cx="18.8" cy="9.4" r="2" fill="#5b84b8"/>' +
+      '<path d="M16.2 18.6c0-3.6 1-5.6 2.6-5.6s2.6 2 2.6 5.6v1h-5.2z" fill="#5b84b8"/>' +
+      '<path d="M16.8 14.5l-2.2-1.9" stroke="#5b84b8" stroke-width="1.5" stroke-linecap="round"/>' +
+    '</svg>';
+
+  function calIconFor(type){
+    if (type === 'game') return ICON_GAME;
+    if (type === 'practice') return ICON_PRACTICE;
+    return ICON_EVENT;
+  }
+  function calIconClassFor(type){
+    if (type === 'game') return 'type-icon-game';
+    if (type === 'practice') return 'type-icon-practice';
+    return 'type-icon-event';
+  }
+
+  var calLegendGame = document.getElementById('calLegendGame');
+  var calLegendPractice = document.getElementById('calLegendPractice');
+  var calLegendEvent = document.getElementById('calLegendEvent');
+  if (calLegendGame) calLegendGame.innerHTML = ICON_GAME + 'Game';
+  if (calLegendPractice) calLegendPractice.innerHTML = ICON_PRACTICE + 'Practice';
+  if (calLegendEvent) calLegendEvent.innerHTML = ICON_EVENT + 'Team Event';
+
+  function calSameDay(a,b){
+    return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+  }
+  function calDaysInMonth(y,m){ return new Date(y, m+1, 0).getDate(); }
+  function eventsOnDay(day){
+    var dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0,0,0,0);
+    var dayEndTime = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 23,59,59,999).getTime();
+    return ALL_EVENTS.filter(function(e){
+      var s = e.date || e.dateStart;
+      var en = e.dateEnd || e.date || e.dateStart;
+      var sNorm = new Date(s.getFullYear(), s.getMonth(), s.getDate()).getTime();
+      var enNorm = new Date(en.getFullYear(), en.getMonth(), en.getDate(), 23,59,59,999).getTime();
+      return enNorm >= dayStart.getTime() && sNorm <= dayEndTime;
+    });
+  }
+  function calDayIconsHtml(evs){
+    var shown = evs.slice(0,4);
+    var html = shown.map(function(e){
+      return '<span class="cal-day-icon" title="' + escapeHtml(titleFor(e)) + '">' + calIconFor(e.type) + '</span>';
+    }).join('');
+    if (evs.length > 4) html += '<span class="cal-day-icon-more">+' + (evs.length-4) + '</span>';
+    return html;
+  }
+
+  var MONTH_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var DOW_FULL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  var calViewDate = new Date(now.getFullYear(), now.getMonth(), 1);
+  var calSelectedIso = null;
+  var calGridEl = document.getElementById('calGrid');
+  var calMonthLabelEl = document.getElementById('calMonthLabel');
+  var calDayDetailEl = document.getElementById('calDayDetail');
+
+  function renderCalDayDetail(iso){
+    if (!calDayDetailEl) return;
+    calSelectedIso = iso;
+    var parts = iso.split('-');
+    var day = new Date(+parts[0], +parts[1]-1, +parts[2]);
+    var evs = eventsOnDay(day).sort(function(a,b){ return eventSortDate(a) - eventSortDate(b); });
+    var heading = DOW_FULL[day.getDay()] + ', ' + MONTH_FULL[day.getMonth()] + ' ' + day.getDate();
+    if (!evs.length){
+      calDayDetailEl.innerHTML = '<div class="cal-detail-heading">' + heading + '</div>' +
+        '<div class="note">Nothing scheduled this day.</div>';
+      return;
+    }
+    var html = '<div class="cal-detail-heading">' + heading + '</div>';
+    html += evs.map(function(e){
+      return '<div class="week-card type-' + e.type + ' cal-detail-card">' +
+        '<div class="card-row">' +
+          '<div>' +
+            '<div class="card-title"><span class="cal-icon-inline ' + calIconClassFor(e.type) + '">' + calIconFor(e.type) + '</span>' + escapeHtml(titleFor(e)) + '</div>' +
+            '<div class="card-sub">' + escapeHtml(subFor(e)) + (e.tentative ? ' · Tentative' : '') + '</div>' +
+          '</div>' +
+          '<span class="badge ' + badgeClassFor(e) + '">' + escapeHtml(e.badge) + '</span>' +
+        '</div>' +
+        '<div class="attend-slot" data-event-id="' + e.id + '"></div>' +
+      '</div>';
+    }).join('');
+    calDayDetailEl.innerHTML = html;
+    initAttendSlots(calDayDetailEl);
+  }
+
+  function selectCalDay(iso){
+    if (calGridEl){
+      calGridEl.querySelectorAll('.cal-day').forEach(function(b){
+        b.classList.toggle('has-selected', b.getAttribute('data-cal-date') === iso);
+      });
+    }
+    renderCalDayDetail(iso);
+  }
+
+  function renderCalendar(){
+    if (!calGridEl || !calMonthLabelEl) return;
+    var y = calViewDate.getFullYear(), m = calViewDate.getMonth();
+    calMonthLabelEl.textContent = MONTH_FULL[m] + ' ' + y;
+
+    var firstDow = new Date(y, m, 1).getDay();
+    var leadDays = (firstDow === 0) ? 6 : firstDow - 1; // Monday-start week
+    var totalDays = calDaysInMonth(y, m);
+    var cells = [];
+    var prevMonthDays = calDaysInMonth(y, m-1 < 0 ? 11 : m-1);
+    var prevY = m-1 < 0 ? y-1 : y, prevM = m-1 < 0 ? 11 : m-1;
+    for (var i=leadDays; i>0; i--){
+      cells.push({date: new Date(prevY, prevM, prevMonthDays - i + 1), outside:true});
+    }
+    for (var d=1; d<=totalDays; d++){
+      cells.push({date: new Date(y, m, d), outside:false});
+    }
+    var trailDays = (7 - (cells.length % 7)) % 7;
+    var nextY = m+1 > 11 ? y+1 : y, nextM = m+1 > 11 ? 0 : m+1;
+    for (var t=1; t<=trailDays; t++){
+      cells.push({date: new Date(nextY, nextM, t), outside:true});
+    }
+
+    calGridEl.innerHTML = cells.map(function(cell){
+      var evs = eventsOnDay(cell.date);
+      var isToday = calSameDay(cell.date, now);
+      var iso = isoDate(cell.date);
+      var cls = 'cal-day' + (cell.outside ? ' is-outside' : '') + (isToday ? ' is-today' : '') + (evs.length ? ' has-events' : '');
+      return '<button type="button" class="' + cls + '" data-cal-date="' + iso + '">' +
+        '<span class="cal-day-num">' + cell.date.getDate() + '</span>' +
+        (evs.length ? '<div class="cal-day-icons">' + calDayIconsHtml(evs) + '</div>' : '') +
+      '</button>';
+    }).join('');
+
+    calGridEl.querySelectorAll('[data-cal-date]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        selectCalDay(btn.getAttribute('data-cal-date'));
+      });
+    });
+
+    if (now.getFullYear() === y && now.getMonth() === m){
+      selectCalDay(isoDate(now));
+    } else {
+      calSelectedIso = null;
+      if (calDayDetailEl) calDayDetailEl.innerHTML = '<div class="note">Tap a day to see what&rsquo;s on.</div>';
+    }
+  }
+
+  var calPrevBtn = document.getElementById('calPrevBtn');
+  var calNextBtn = document.getElementById('calNextBtn');
+  if (calPrevBtn) calPrevBtn.addEventListener('click', function(){
+    calViewDate = new Date(calViewDate.getFullYear(), calViewDate.getMonth()-1, 1);
+    renderCalendar();
+  });
+  if (calNextBtn) calNextBtn.addEventListener('click', function(){
+    calViewDate = new Date(calViewDate.getFullYear(), calViewDate.getMonth()+1, 1);
+    renderCalendar();
+  });
+
+  renderCalendar();
 })();
 </script>
 
