@@ -181,6 +181,35 @@
     margin-top:2px;
   }
 
+  .urgent-banner{
+    margin:14px 18px 0;
+    background:rgba(193,74,58,0.16);
+    border:1.5px solid var(--danger);
+    border-radius:12px;
+    padding:12px 14px;
+    position:relative;
+    z-index:1;
+  }
+  .urgent-banner-label{
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:#ff9d8c;
+    font-weight:800;
+    margin-bottom:3px;
+  }
+  .urgent-banner-text{
+    font-size:14.5px;
+    font-weight:700;
+    color:var(--white);
+  }
+  .urgent-banner-sub{
+    font-size:12.5px;
+    color:rgba(255,255,255,0.82);
+    margin-top:4px;
+    font-weight:600;
+  }
+
   /* Top quote banner — persistent across every view */
   .top-quote{
     background:linear-gradient(135deg,var(--navy-light) 0%,var(--navy) 100%);
@@ -1386,6 +1415,11 @@
     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
       <span class="hamburger-icon"><i></i><i></i><i></i></span>
     </button>
+  </div>
+  <div class="urgent-banner" id="urgentBanner">
+    <div class="urgent-banner-label">&#9888; Urgent change for tonight</div>
+    <div class="urgent-banner-text">Intra-squad game at Glen Abbey Community Centre, 5:00&ndash;6:15 PM</div>
+    <div class="urgent-banner-sub">Please message Jeremy if you're unable to make it.</div>
   </div>
   <div class="next-up" id="nextUpCard">
     <div class="next-up-label">Next Up</div>
@@ -2648,12 +2682,13 @@
   ];
   var SEASON_END = new Date(2027,4,16); // May 16, 2027 — end of OBA Cup window
   // Add any dates with no practice (holidays, breaks) here as 'YYYY-MM-DD':
-  var EXCLUDED_PRACTICE_DATES = ['2026-09-30'];
+  var EXCLUDED_PRACTICE_DATES = ['2026-09-30', '2026-10-07'];
 
   var ONE_OFF_EVENTS = [
     {id:'practice-2026-09-30-loyola', type:'practice', title:'Practice', sub:'Loyola High School · Oakville', time:'8:00 PM – 9:45 PM', date:new Date(2026,8,30), badge:'Wed, Sep 30'},
+    {id:'practice-2026-10-07-stcecilia', type:'practice', title:'Practice', sub:'St. Cecilia School · 420 Threshing Mill, Oakville', time:'8:00 PM – 10:00 PM', date:new Date(2026,9,7), badge:'Wed, Oct 7'},
     {id:'evt-mohawk', type:'event', title:'Mohawk College MBB', sub:'Mohawk College vs. Windsor Lancers — team outing', date:new Date(2026,9,2), badge:'Fri, Oct 2'},
-    {id:'game-shoot360-oct4', type:'game', title:'Exhibition Game vs Panthers', sub:'@Shoot360 Oakville', date:new Date(2026,9,4,17,0,0), badge:'Sun, Oct 4 · 5:00 PM'},
+    {id:'game-shoot360-oct4', type:'game', title:'Intra-Squad Game', sub:'Intrasquad scrimmage at Glen Abbey with times mentioned above', date:new Date(2026,9,4,17,0,0), dateEnd:new Date(2026,9,4,18,15,0), badge:'Sun, Oct 4 · 5:00–6:15 PM'},
     {id:'game-burloak-oct13', type:'game', title:'Exhibition Game vs Burloak Elite', sub:'@Burloak', date:new Date(2026,9,13,20,30,0), badge:'Tue, Oct 13 · 8:30 PM'},
     {id:'game-coalition-1', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2026,9,31), dateEnd:new Date(2026,10,1), badge:'Oct 31 – Nov 1'},
     {id:'game-coalition-2', type:'game', title:'Coalition League', sub:'Game Weekend', dateStart:new Date(2026,11,5), dateEnd:new Date(2026,11,6), badge:'Dec 5 – 6'},
@@ -2923,6 +2958,15 @@
       var dEnd = new Date(+parts[0], +parts[1]-1, +parts[2], 23, 59, 59, 999);
       if (dEnd < now) dl.style.display = 'none';
     });
+
+    // The "urgent change for tonight" banner is tied to a specific one-off
+    // event — once that event is past, it auto-hides so it doesn't linger
+    // on the home screen for the rest of the season.
+    var urgentBanner = document.getElementById('urgentBanner');
+    if (urgentBanner){
+      var urgentEvent = eventMap['game-shoot360-oct4'];
+      if (urgentEvent && isPast(urgentEvent)) urgentBanner.style.display = 'none';
+    }
   }
   hidePastStaticItems();
 
