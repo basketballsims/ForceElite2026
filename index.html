@@ -172,23 +172,23 @@
   }
   .next-up-social{
     display:flex;
-    flex-direction:column;
+    flex-direction:row;
     gap:8px;
     flex-shrink:0;
   }
   .next-up-social-link{
-    width:28px;
-    height:28px;
+    width:40px;
+    height:40px;
     display:flex;
     align-items:center;
     justify-content:center;
-    border-radius:8px;
+    border-radius:10px;
     background:rgba(255,255,255,0.08);
     border:1px solid rgba(244,185,66,0.35);
   }
   .next-up-social-link svg{
-    width:16px;
-    height:16px;
+    width:22px;
+    height:22px;
   }
   .next-up-label{
     font-size:10.5px;
@@ -456,7 +456,7 @@
     gap:14px;
   }
   .sponsor-logo{
-    width:100px;
+    width:50%;
     flex-shrink:0;
     border-radius:8px;
     display:block;
@@ -472,9 +472,6 @@
     margin-top:8px;
   }
   .sponsor-links .link-btn{margin-top:0;width:100%;box-sizing:border-box;white-space:normal;word-break:break-word;text-align:center;}
-  @media (max-width:360px){
-    .sponsor-logo{width:76px;}
-  }
   /* Compact flat icon (no circular background) — league datelist rows and
      the "This Week" past-item summary line. */
   .datelist-label{display:inline-flex;align-items:center;gap:6px;}
