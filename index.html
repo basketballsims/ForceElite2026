@@ -161,6 +161,34 @@
     padding:12px 14px;
     position:relative;
     z-index:1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .next-up-main{
+    flex:1;
+    min-width:0;
+  }
+  .next-up-social{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    flex-shrink:0;
+  }
+  .next-up-social-link{
+    width:28px;
+    height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(244,185,66,0.35);
+  }
+  .next-up-social-link svg{
+    width:16px;
+    height:16px;
   }
   .next-up-label{
     font-size:10.5px;
@@ -1422,9 +1450,26 @@
     <div class="urgent-banner-sub">Please message Jeremy if you're unable to make it.</div>
   </div>
   <div class="next-up" id="nextUpCard">
-    <div class="next-up-label">Next Up</div>
-    <div class="next-up-text" id="nextUpText">Loading…</div>
-    <div class="next-up-sub" id="nextUpSub"></div>
+    <div class="next-up-main">
+      <div class="next-up-label">Next Up</div>
+      <div class="next-up-text" id="nextUpText">Loading…</div>
+      <div class="next-up-sub" id="nextUpSub"></div>
+    </div>
+    <div class="next-up-social">
+      <a class="next-up-social-link" href="https://instagram.com/bfe2k11" target="_blank" rel="noopener" aria-label="Follow Force Elite on Instagram">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="5" stroke="#f4b942" stroke-width="2"/>
+          <circle cx="12" cy="12" r="4.5" stroke="#f4b942" stroke-width="2"/>
+          <circle cx="17.5" cy="6.5" r="1.3" fill="#f4b942"/>
+        </svg>
+      </a>
+      <a class="next-up-social-link" href="https://youtube.com/@burlingtonforce-2011?si=MPhhV7SNhtZtRYk8" target="_blank" rel="noopener" aria-label="Watch Force Elite on YouTube">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1.5" y="5" width="21" height="14" rx="4" stroke="#f4b942" stroke-width="2"/>
+          <path d="M10 9.2v5.6l5-2.8-5-2.8z" fill="#f4b942"/>
+        </svg>
+      </a>
+    </div>
   </div>
 </header>
 
@@ -2125,6 +2170,38 @@
         </div>
       </div>
       <a class="link-btn" href="https://coalitionbasketball.com/" target="_blank" rel="noopener">coalitionbasketball.com</a>
+    </div>
+
+    <div class="section-title">Follow Us</div>
+    <div class="card">
+      <div class="card-row">
+        <div>
+          <div class="card-title">Instagram</div>
+          <div class="card-sub">Photos, updates &amp; game-day posts</div>
+        </div>
+      </div>
+      <a class="link-btn" href="https://instagram.com/bfe2k11" target="_blank" rel="noopener">@bfe2k11</a>
+    </div>
+    <div class="card">
+      <div class="card-row">
+        <div>
+          <div class="card-title">YouTube</div>
+          <div class="card-sub">Game film &amp; highlights</div>
+        </div>
+      </div>
+      <a class="link-btn" href="https://youtube.com/@burlingtonforce-2011?si=MPhhV7SNhtZtRYk8" target="_blank" rel="noopener">Burlington Force 2011</a>
+    </div>
+
+    <div class="section-title">Proudly Sponsored By</div>
+    <div class="card">
+      <div class="card-row">
+        <div>
+          <div class="card-title">Top Tier Company</div>
+          <div class="card-sub">Team sponsor</div>
+        </div>
+      </div>
+      <a class="link-btn" href="https://instagram.com/toptiercompany" target="_blank" rel="noopener">@toptiercompany</a>
+      <a class="link-btn" href="https://www.toptiercompany.ca" target="_blank" rel="noopener" style="margin-left:8px;">www.toptiercompany.ca</a>
     </div>
 
     <div class="section-title">About This App</div>
