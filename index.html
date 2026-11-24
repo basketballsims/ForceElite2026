@@ -2807,14 +2807,16 @@
   ];
   var SEASON_END = new Date(2027,4,16); // May 16, 2027 — end of OBA Cup window
   // Add any dates with no practice (holidays, breaks) here as 'YYYY-MM-DD':
-  var EXCLUDED_PRACTICE_DATES = ['2026-09-30', '2026-10-07', '2026-10-19'];
+  var EXCLUDED_PRACTICE_DATES = ['2026-09-30', '2026-10-07', '2026-10-19', '2026-11-25'];
 
   var ONE_OFF_EVENTS = [
+    {id:'event-tournament-jan2', type:'event', title:'Tournament Weekend', sub:'Games in Milton & Mississauga · details TBD', dateStart:new Date(2027,0,2), dateEnd:new Date(2027,0,3), badge:'Jan 2 – 3'},
+    {id:'practice-2026-11-25-sjp2', type:'practice', title:'Practice', sub:"St. John Paul II · 2130 Kingsridge Drive", time:'8:00 PM – 10:00 PM', date:new Date(2026,10,25), badge:'Wed, Nov 25'},
     {id:'game-obl-nov21-knights', type:'game', title:'OBL Pool E vs Hoopzone Knights (East)', sub:'@Bill Crothers Secondary, 44 Main St, Unionville', date:new Date(2026,10,21,9,0,0), badge:'Sat, Nov 21 · 9:00 AM'},
     {id:'game-obl-nov21-stratford', type:'game', title:'OBL Pool E vs Stratford Revolution', sub:'@Bill Crothers Secondary, 44 Main St, Unionville', date:new Date(2026,10,21,13,30,0), badge:'Sat, Nov 21 · 1:30 PM'},
     {id:'game-panthers-nov15', type:'game', title:'Exhibition Game vs Panthers', sub:'@Shoot360 Oakville', date:new Date(2026,10,15,16,30,0), badge:'Sun, Nov 15 · 4:30 PM'},
     {id:'game-u17-nov17', type:'game', title:'Exhibition Game vs Force Elite U17', sub:'@Robert Bateman High School', date:new Date(2026,10,17,19,30,0), badge:'Tue, Nov 17 · 7:30 PM'},
-    {id:'event-newmarket-tournament-dec12', type:'event', title:'Tournament in Newmarket', sub:'Newmarket · details TBD', dateStart:new Date(2026,11,12), dateEnd:new Date(2026,11,13), badge:'Dec 12 – 13'},
+    {id:'event-newmarket-tournament-dec12', type:'event', title:'Tournament Weekend', sub:'Games in Newmarket, Aurora, Keswick & King City · details TBD', dateStart:new Date(2026,11,12), dateEnd:new Date(2026,11,13), badge:'Dec 12 – 13'},
     {id:'practice-2026-11-08-qecc', type:'practice', title:'Practice', sub:'Queen Elizabeth Community Centre · Oakville', time:'6:45 PM – 8:45 PM', date:new Date(2026,10,8), badge:'Sun, Nov 8'},
     {id:'practice-2026-09-30-loyola', type:'practice', title:'Practice', sub:'Loyola High School · Oakville', time:'8:00 PM – 9:45 PM', date:new Date(2026,8,30), badge:'Wed, Sep 30'},
     {id:'practice-2026-10-07-stcecilia', type:'practice', title:'Practice', sub:'St. Cecilia School · 420 Threshing Mill, Oakville', time:'8:00 PM – 10:00 PM', date:new Date(2026,9,7), badge:'Wed, Oct 7'},
